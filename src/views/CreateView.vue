@@ -21,17 +21,49 @@
 
           <section class="wrapper2">
             <div class="doubleAlign">
-              <button id="roundsButton">
-              X rounds
-            </button>
-            <button id="timeButton">
-              Y time
-            </button>
-            <button id="teamsButton">
-              Z Teams
-            </button>
-            </div>
+              <div class="gameOptions">
+              <button v-if="!showRoundsForm" v-on:click="showRoundsForm = !showRoundsForm">{{rounds}} rounds</button>
+              <form id="gameSelectionsOptionForm" v-if="showRoundsForm">
+                <label class="customRadio"> <span class="labelText">5</span>
+                <input type="radio" id="rounds_amount1" v-model="rounds" value="5" v-on:change="roundsButtonChange($event)">
+                </label>
+                <label class="customRadio"><span class="labelText">10</span>
+                <input type="radio" id="rounds_amount2" v-model="rounds" value="10" v-on:change="roundsButtonChange($event)">
+                </label>
+                <label class="customRadio"><span class="labelText">15</span>
+                <input type="radio" id="rounds_amount3" v-model="rounds" value="15" v-on:change="roundsButtonChange($event)">
+                </label>
+              </form>
+              </div>
 
+
+              <div class="gameOptions">
+              <button v-if="!showTimeForm" v-on:click="showTimeForm = !showTimeForm">{{time}} sec</button>
+              <form id="gameSelectionsOptionForm" v-if="showTimeForm">
+                <label class="customRadio"> <span class="labelText">30</span>
+                <input type="radio" id="time_amount1" v-model="time" value="30" v-on:change="timeButtonChange($event)">
+                </label>
+                <label class="customRadio"><span class="labelText">45</span>
+                <input type="radio" id="time_amount2" v-model="time" value="45" v-on:change="timeButtonChange($event)">
+                </label>
+                <label class="customRadio"><span class="labelText">60</span>
+                <input type="radio" id="time_amount3" v-model="time" value="60" v-on:change="timeButtonChange($event)">
+                </label>
+              </form>
+              </div>
+
+              <div class="gameOptions">
+                <button v-if="!showTeamForm" v-on:click="showTeamForm = !showTeamForm">{{teamText}}</button>
+                <form id="gameSelectionsOptionForm" v-if="showTeamForm">
+                <label class="customRadio"> <span class="labelText">No team</span>
+                <input type="radio" id="team" v-model="teams" value="false" v-on:change="teamButtonChange($event)">
+                </label>
+                <label class="customRadio"><span class="labelText">Team</span>
+                <input type="radio" id="noTeam" v-model="teams" value="true" v-on:change="teamButtonChange($event)">
+                </label>
+              </form>
+              </div>
+              </div>
           </section>
 
           <section class="wrapper3">
@@ -118,7 +150,15 @@ export default {
       game_id: "",
       website: "http://google.se",
       QRvalue: "http://google.se",
-      participents: ["Participent 1","Participent 2"]
+      participents: ["Participent 1","Participent 2"],
+      showRoundsForm: false,
+      showTimeForm: false,
+      showTeamForm: false,
+      rounds: 5,
+      time: 30,
+      teams: false,
+      teamText: "No Team"
+
 
       
     }
@@ -150,6 +190,21 @@ export default {
     },
     runQuestion: function () {
       socket.emit("runQuestion", {pollId: this.pollId, questionNumber: this.questionNumber})
+    },
+    roundsButtonChange: function(){
+      this.showRoundsForm = !this.showRoundsForm;
+    },
+    timeButtonChange: function(){
+      this.showTimeForm = !this.showTimeForm;
+    },
+    teamButtonChange: function(){
+      if(this.teams){
+        this.teamText = "Team"
+      }
+      else{
+        this.teamText = "No team"
+      }
+      this.showTeamForm = !this.showTeamForm;
     }
   }
 }
@@ -191,6 +246,9 @@ button{
   width: 10em;
   margin: auto;
 }
+.gameOptions{
+  margin: auto;
+}
 
 #first{
   width: 50%;
@@ -223,6 +281,36 @@ a {
   font-size: 1em;
   color: white;
 }
+.gameSelectionsOptionForm{
+  text-align: left;
+  margin: 0 10px 6px 10px;
+  font-size: 11px;
+  line-height:11px;
+}
+.customRadio input{
+  visibility: hidden;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.customRadio{
+box-sizing: border-box;
+width: 80%;
+border: solid #000000 3px;
+padding: 10px;
+padding-top: 12px;
+padding-bottom: 12px;
+align-items: left;
+background-color: rgb(237, 40, 135);
+font-size: 0.8;
+}
+.labelText{
+  margin-left: 0.7em;
+}
+
+
+
+
 .participentArea{
   height: 99%;
   width: 60%;
@@ -238,6 +326,9 @@ a {
 #startgame{
   margin-bottom: 1em;
 }
+
+
+
 
 
 
