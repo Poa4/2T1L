@@ -38,11 +38,22 @@ function sockets(io, socket, data) {
     data.submitAnswer(d.pollId, d.answer);
     io.to(d.pollId).emit('dataUpdate', data.getAnswers(d.pollId));
   });
-
+  socket.on('submitUserName', function(d) {
+    data.submitUserName(d.pollId, d.name);
+    let participents = data.getParticipents(d.pollId);
+    io.to(d.pollId).emit('participentsUpdate', participents);
+  });
+  socket.on('enterLobby', function(pollId){
+    let participents = data.getParticipents(pollId);
+    socket.emit('participentsUpdate', participents);
+  });
   socket.on('resetAll', () => {
     data = new Data();
     data.initializeData();
-  })
+  });
+  socket.on("startGame", function(pollId){
+    io.to(pollId).emit("startGame")
+  });
  
 }
 

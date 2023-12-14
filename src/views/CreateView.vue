@@ -76,7 +76,7 @@
           </section>
 
           <section>
-            <button id="startgame">
+            <button v-on:click="start" id="startgame">
               Start game
             </button>
           </section>
@@ -140,8 +140,8 @@ export default {
   name: 'CreateView',
   data: function () {
     return {
+      pollId: "test",
       lang: localStorage.getItem("lang") || "en",
-      pollId: "",
       question: "",
       answers: ["", ""],
       questionNumber: 0,
@@ -205,6 +205,10 @@ export default {
         this.teamText = "No team"
       }
       this.showTeamForm = !this.showTeamForm;
+    },
+    start: function() {
+      console.log(this.pollId);
+      socket.emit("startGame", this.pollId)
     }
   }
 }
