@@ -32,12 +32,13 @@
 </template>
 
 <script>
-/*import io from 'socket.io-client';
-const socket = io("localhost:3000");*/
+import io from 'socket.io-client';
+const socket = io("localhost:3000");
 export default {
   name: "HomePageView",
   data:function() {
   return {
+      id: "test",
       showModal: false,
       playerName: "",
       gameCode: "",
@@ -47,11 +48,14 @@ export default {
     this.debounce =  this.debounceGenerateRandomAvatarButton(this.generateRandomAvatar, 1000)
   },
   methods: {
-    /*createGame: function () {
-      let gameLobbyCode = Math.random().toString(36).substring(2, 5) + Math.random().toString(36).substring(2, 5);
-      console.log(gameLobbyCode)
-      socket.emit("createGameButton", {gameLobbyCode: this.gameLobbyCode, lang: this.lang })
-    },*/
+    createGame: function () {
+      /*let gameLobbyCode = Math.random().toString(36).substring(2, 5) + Math.random().toString(36).substring(2, 5);
+      console.log(gameLobbyCode)*/
+      let gameLobbyCode = "test";
+
+      socket.emit("createPoll", {gameLobbyCode: gameLobbyCode, lang: this.lang })
+      this.$router.push("/create/" + gameLobbyCode)
+    },
     debounceGenerateRandomAvatarButton: function(func, timeout) {
       let timer;
       return (...args) => {

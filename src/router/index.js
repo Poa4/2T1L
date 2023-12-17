@@ -20,15 +20,25 @@ const router = createRouter({
       component: () => import('../views/WaitingRoom.vue')
     },
     {
-      path: '/create/',
+      path: '/create/:id',
       name: 'CreateView',
       component: () => import('../views/CreateView.vue')
+    },
+    {
+      path: '/InsertTruths/:uid',
+      name: 'insertTruths',
+      component: () => import('../views/InsertTruths.vue')
     },
     {
       path: '/result/:id',
       name: 'ResultView',
       component: () => import('../views/ResultView.vue')
     },
+    {
+      path: '/homePageView',
+      name: 'HomePage',
+      component: () => import('../views/HomePageView.vue')
+    }
   ]
 })
 

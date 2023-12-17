@@ -45,11 +45,19 @@ function sockets(io, socket, data) {
   });
   socket.on('enterLobby', function(pollId){
     let participents = data.getParticipents(pollId);
-    socket.emit('participentsUpdate', participents);
+    socket.to(pollId).emit('participentsUpdate', participents);
   });
   socket.on('resetAll', () => {
     data = new Data();
     data.initializeData();
+  });
+  socket.on("changeTime", function(d){
+    io.to(d.pollId).emit("timeChanged", d.time)
+  });
+  socket.on("changeTeams", function(d){
+    io.to(d.pollId).emit("teamsChanged", d.teams)
+  });socket.on("changeRounds", function(d){
+    io.to(d.pollId).emit("roundsChanged", d.rounds)
   });
   socket.on("startGame", function(pollId){
     io.to(pollId).emit("startGame")

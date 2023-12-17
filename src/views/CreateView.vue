@@ -3,7 +3,7 @@
           <section class="wrapper"> 
             <div id="first">
                 <p>
-                  Game ID: {{game_id}}
+                  Game ID: {{pollId}}
                   <br/>
                     Join at: <a v-bind:href="website">{{ website }} </a>
                 </p>
@@ -69,7 +69,7 @@
           <section class="wrapper3">
             <div class="participentArea">
                 <p v-for="participent in participents">
-                  {{participent}}
+                  {{participent.name}}
                 </p>
             </div>
 
@@ -140,40 +140,42 @@ export default {
   name: 'CreateView',
   data: function () {
     return {
-      pollId: "test",
+      pollId: "",
       lang: localStorage.getItem("lang") || "en",
       question: "",
       answers: ["", ""],
       questionNumber: 0,
       data: {},
       uiLabels: {},
-      game_id: "",
-      website: "http://google.se",
-      QRvalue: "http://google.se",
-      participents: ["Participent 1","Participent 2"],
+      website: "http://localhost:5173/lobby/test",
+      QRvalue: "http://localhost:5173/lobby/test",
       showRoundsForm: false,
       showTimeForm: false,
       showTeamForm: false,
       rounds: 5,
       time: 30,
       teams: false,
-      teamText: "No Team"
+      teamText: "No Team",
+      participents: []
 
 
       
     }
   },
   created: function () {
-    this.id = this.$route.params.id;
+    this.pollId = this.$route.params.id;
     socket.emit("pageLoaded", this.lang);
+    socket.emit("joinPoll", this.pollId);
     socket.on("init", (labels) => {
       this.uiLabels = labels
-    })
+    });
     socket.on("dataUpdate", (data) =>
       this.data = data
-    )
+    );
     socket.on("pollCreated", (data) =>
-      this.data = data)
+      this.data = data);
+    socket.on("participentsUpdate", (participents) => 
+    this.participents = participents);
   },
   components: {
       QrcodeVue
@@ -193,9 +195,11 @@ export default {
     },
     roundsButtonChange: function(){
       this.showRoundsForm = !this.showRoundsForm;
+      socket.emit("changeRounds", {pollId: this.pollId, rounds: this.rounds})
     },
     timeButtonChange: function(){
       this.showTimeForm = !this.showTimeForm;
+      socket.emit("changeTime", {pollId: this.pollId, time: this.time})
     },
     teamButtonChange: function(){
       if(this.teams){
@@ -205,6 +209,7 @@ export default {
         this.teamText = "No team"
       }
       this.showTeamForm = !this.showTeamForm;
+      socket.emit("changeTeams", {pollId: this.pollId, teams: this.teams})
     },
     start: function() {
       console.log(this.pollId);
@@ -320,6 +325,8 @@ font-size: 0.8;
   width: 60%;
   background-color: rgb(197, 196, 196);
   margin: auto;
+  overflow: scroll;
+  overflow-x: hidden;
 }
 .participentArea p{
   font-size: 1em;
@@ -328,7 +335,7 @@ font-size: 0.8;
   margin-left: 0.5em;
 }
 #startgame{
-  margin-bottom: 1em;
+  margin-bottom: 1.8em;
 }
 
 
