@@ -3,7 +3,7 @@
   <div class="playGameDiv">
     <h1 class="gameTitle">2 Lies and 1 Truth</h1>
     <button @click="createGame" class="createGameButton">Create Game</button>
-    <button @click="showModal = true;generateRandomAvatar" class="joinGameButton">Join Game</button>
+    <button @click="showModal = true, generateRandomAvatar" class="joinGameButton">Join Game</button>
     <div>
       <div v-if="showModal" class="modal">
         <div class="joinGameModalContent">
@@ -16,7 +16,7 @@
             <div class="avatarDiv">
               <span class="avatars" v-for="emoji in avatars">
                 {{emoji}}</span>
-              <button @click="this.debounce() ;generateRandomAvatar" class="generateRandomAvatarsButton">CLICK ME FOR NEW EMOJIS!!</button><br>
+              <button @click="this.debounce(), generateRandomAvatar" class="generateRandomAvatarsButton">CLICK ME FOR NEW EMOJIS!!</button><br>
             </div>
 
             <input type="submit" value="Join!">
@@ -38,7 +38,7 @@ export default {
   name: "HomePageView",
   data:function() {
   return {
-      id: "test",
+      id: "",
       showModal: false,
       playerName: "",
       gameCode: "",

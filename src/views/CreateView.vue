@@ -141,6 +141,7 @@ export default {
   data: function () {
     return {
       pollId: "",
+      userName: "theManTheKingTheLegend",
       lang: localStorage.getItem("lang") || "en",
       question: "",
       answers: ["", ""],
@@ -148,7 +149,7 @@ export default {
       data: {},
       uiLabels: {},
       website: "http://localhost:5173/lobby/test",
-      QRvalue: "http://localhost:5173/lobby/test",
+      QRvalue: "http://google.se",
       showRoundsForm: false,
       showTimeForm: false,
       showTeamForm: false,
@@ -214,6 +215,7 @@ export default {
     start: function() {
       console.log(this.pollId);
       socket.emit("startGame", this.pollId)
+      this.$router.push("/InsertTruths/" + this.userName)
     }
   }
 }
