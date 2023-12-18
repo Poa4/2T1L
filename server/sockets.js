@@ -45,7 +45,7 @@ function sockets(io, socket, data) {
   });
   socket.on('enterLobby', function(pollId){
     let participents = data.getParticipents(pollId);
-    socket.to(pollId).emit('participentsUpdate', participents);
+    socket.emit('participentsUpdate', participents);
   });
   socket.on('resetAll', () => {
     data = new Data();
