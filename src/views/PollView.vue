@@ -26,11 +26,13 @@ export default {
         a: []
       },
       pollId: "inactive poll",
+      userName: "",
       submittedAnswers: {}
     }
   },
   created: function () {
     this.pollId = this.$route.params.id
+    this.userName = this.$route.params.uid
     socket.emit('joinPoll', this.pollId)
     socket.on("newQuestion", q =>
       this.question = q

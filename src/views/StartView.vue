@@ -11,7 +11,7 @@
   </header>
   <ResponsiveNav v-bind:hideNav="hideNav">
     <button v-on:click="switchLanguage">{{uiLabels.changeLanguage}}</button>
-    <router-link to="/create/">{{uiLabels.createPoll}}</router-link>
+    <router-link to="/create/test">{{uiLabels.createPoll}}</router-link>
     <a href="">{{uiLabels.about}}</a>
     <a href="">FAQ</a>
     <router-link to="/test/">{{uiLabels.extraButton}}</router-link>
@@ -22,7 +22,7 @@
     Write poll id: 
     <input type="text" v-model="id">
   </label>
-  <router-link v-bind:to="'/poll/'+id">{{uiLabels.participatePoll}}</router-link>
+  <router-link v-bind:to="'/lobby/'+id">{{uiLabels.participatePoll}}</router-link>
 </template>
 
 <script>
@@ -39,6 +39,7 @@ export default {
     return {
       uiLabels: {},
       id: "",
+      testCreateId: "test",
       lang: localStorage.getItem("lang") || "en",
       hideNav: true
     }
