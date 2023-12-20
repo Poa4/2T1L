@@ -196,11 +196,11 @@ export default {
     },
     roundsButtonChange: function(){
       this.showRoundsForm = !this.showRoundsForm;
-      socket.emit("changeRounds", {pollId: this.pollId, rounds: this.rounds})
+      this.sendUpdatedGameOptions();
     },
     timeButtonChange: function(){
       this.showTimeForm = !this.showTimeForm;
-      socket.emit("changeTime", {pollId: this.pollId, time: this.time})
+      this.sendUpdatedGameOptions();
     },
     teamButtonChange: function(){
       if(this.teams){
@@ -210,12 +210,15 @@ export default {
         this.teamText = "No team"
       }
       this.showTeamForm = !this.showTeamForm;
-      socket.emit("changeTeams", {pollId: this.pollId, teams: this.teams})
+      this.sendUpdatedGameOptions();
     },
     start: function() {
       console.log(this.pollId);
       socket.emit("startGame", this.pollId)
       this.$router.push("/InsertTruths/" + this.userName)
+    },
+    sendUpdatedGameOptions: function(){
+      socket.emit("GameOptionsChange", {pollId: this.pollId, data: {rounds: this.rounds, time: this.time, teams: this.teams}})
     }
   }
 }

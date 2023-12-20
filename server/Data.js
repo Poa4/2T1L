@@ -16,7 +16,9 @@ function Data() {
                  ],
     answers: [],
     currentQuestion: 0,
-    participents: []
+    participents: [],
+    gameOptions: {time: 5, rounds: 30, teams: false}
+    
   };
   this.polls["2"] = {
     lang: "en",
@@ -51,11 +53,27 @@ Data.prototype.createPoll = function(pollId, lang="en") {
     poll.questions = [];
     poll.answers = [];
     poll.currentQuestion = 0;
-    poll.participents = [];           
+    poll.participents = [];
+    poll.gameOptions = {time: 5, rounds: 30, teams: false};
     this.polls[pollId] = poll;
     console.log("poll created", pollId, poll);
   }
   return this.polls[pollId];
+}
+
+Data.prototype.editGameOptions = function(pollId, data){
+  const poll = this.polls[pollId];
+  if (typeof poll !== 'undefined') {
+    poll.gameOptions = data
+  }
+}
+
+Data.prototype.getGameOptions = function(pollId){
+  const poll = this.polls[pollId];
+  if (typeof poll !== 'undefined') {
+    return poll.gameOptions;
+  }
+  return {}
 }
 
 Data.prototype.addQuestion = function(pollId, q) {
