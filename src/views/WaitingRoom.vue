@@ -132,16 +132,20 @@ Poll link:
     });
         socket.on("participentsUpdate", (participents) =>
         this.participents = participents);
+        socket.on("currentRoomStatus", (participents, gameOptions) => {
+          this.participents = participents;
+          this.rounds = gameOptions.rounds;
+          this.time = gameOptions.time;
+          this.teams = gameOptions.teams;
+        })
+        socket.on("GOptionsChange", (data) => {
+          this.rounds = data.rounds;
+          this.time = data.time;
+          this.teams = data.teams;
+        });
         socket.on("startGame", () => this.$router.push("/InsertTruths/" + this.userName))
         socket.emit("joinPoll", this.pollId);
         socket.emit("enterLobby", this.pollId);
-
-        socket.on("timeChanged", (time) =>
-        this.time = time);
-        socket.on("teamsChanged", (teams) =>
-        this.teams = teams);
-        socket.on("roundsChanged", (rounds) =>
-        this.rounds = rounds);
     },
     methods: {
       submitUserName: function () {
