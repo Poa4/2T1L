@@ -141,7 +141,7 @@ export default {
   data: function () {
     return {
       pollId: "",
-      userName: "theManTheKingTheLegend",
+      userName: "",
       lang: localStorage.getItem("lang") || "en",
       question: "",
       answers: ["", ""],
@@ -162,6 +162,7 @@ export default {
   },
   created: function () {
     this.pollId = this.$route.params.id;
+    this.userName = this.$route.params.uid;
     socket.emit("pageLoaded", this.lang);
     socket.emit("joinPoll", this.pollId);
     socket.on("init", (labels) => {

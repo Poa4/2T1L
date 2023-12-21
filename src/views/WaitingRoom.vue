@@ -45,7 +45,6 @@
 
       <section>
         <p id="waitingToStart">
-          <input type="text" v-model="userName">
           <button v-on:click="submitUserName"> submit </button>
           <!-- Waiting for host to start the game -->
         </p>
@@ -126,6 +125,7 @@ Poll link:
     },
     created: function () {
         this.pollId = this.$route.params.id;
+        this.userName = this.$route.params.uid;
         socket.emit("pageLoaded", this.lang);
         socket.on("init", (labels) => {
         this.uiLabels = labels
@@ -149,7 +149,7 @@ Poll link:
     },
     methods: {
       submitUserName: function () {
-        socket.emit("submitUserName", {pollId: this.pollId, name: this.userName})
+        console.log(this.userName)
       }
     },
     components: {
