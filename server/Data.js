@@ -5,6 +5,7 @@ import {readFileSync} from "fs";
 // Store data in an object to keep the global namespace clean
 function Data() {
   this.polls = {};
+  this.gameLobbies = {};
 }
 
 /***********************************************

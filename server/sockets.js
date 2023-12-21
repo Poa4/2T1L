@@ -9,6 +9,10 @@ function sockets(io, socket, data) {
     socket.emit('init', data.getUILabels(lang));
   });
 
+  socket.on("createGame", function(d) {
+    console.log("works")
+  });
+
   socket.on('createPoll', function(d) {
     socket.emit('pollCreated', data.createPoll(d.pollId, d.lang));
   });
@@ -43,7 +47,23 @@ function sockets(io, socket, data) {
     data = new Data();
     data.initializeData();
   })
- 
+
+  socket.on("createGameLobby", (playerName, gameCode,gameSettings, chosenAvatar)=> {
+      socket.join(gameCode);
+      if (!data.gameLobbies[gameCode]){
+        data.gameLobbies[gameCode] = {"players": [], "gameSettings": gameSettings}
+        data.gameLobbies[gameCode].players.push({"playerName": playerName, "playerAvatar":chosenAvatar})
+      }
+    })
+    socket.on("joinGame", (playerName, gameCode ,chosenAvatar) => {
+      try {
+        socket.join(gameCode);
+        data.gameLobbies[gameCode].players.push({"playerName": playerName, "playerAvatar": chosenAvatar})
+        console.log(data.gameLobbies[gameCode].players);
+      }catch (error) {
+        console.error(error)
+      }
+    })
 }
 
 export { sockets };

@@ -2,26 +2,63 @@
   <body>
   <div class="playGameDiv">
     <h1 class="gameTitle">2 Lies and 1 Truth</h1>
-    <button @click="createGame" class="createGameButton">Create Game</button>
-    <button @click="showModal = true;generateRandomAvatar" class="joinGameButton">Join Game</button>
+    <button @click="showCreateGameModal = true;
+                    generateRandomAvatar();
+                    generateGameCode();" class="createGameButton">Create Game</button>
+    <button @click="showJoinGameModal = true;
+                    generateRandomAvatar();
+                    " class="joinGameButton">Join Game</button>
     <div>
-      <div v-if="showModal" class="modal">
-        <div class="joinGameModalContent">
-          <form>
+      <div v-if="showCreateGameModal" class="modal">
+        <div class="modalContent">
+          <form @submit.prevent="createGame()">
+          <label for="playerName">Player Name:</label><br>
+          <input type="text" id="playerName" v-model="playerName" required="required"><br><br>
+          <label for="gameCode">Game Code:</label><br>
+          <input type="text" id="gameCode" v-model="gameCode" readonly><br><br>
+          <label for="avatar">Pick a avatar:</label><br>
+          <div class="avatarDiv">
+              <span class="avatars" v-for="emoji in avatars">
+                <input type="radio" name="avatar"  @click="chooseAvatar()" required="required">{{emoji}}</span>
+          </div>
+          <div class="gameSettings">
+            <label for="rounds">Number of rounds:</label><br>
+            <input type="number" id="rounds" v-model="gameSettings.rounds" required="required" :min="1"><br><br>
+            <label for="time">Time per round:</label><br>
+            <input type="number" id="rounds" v-model="gameSettings.time" required="required" :min="60"><br><br>
+            <label for="teams">Number of teams:</label><br>
+            <input type="number" id="rounds" v-model="gameSettings.teams" required="required" :min="1"><br><br>
+          </div>
+            <button>Create Game</button>
+          </form>
+
+          <button @click="this.debounce();
+                          generateRandomAvatar" class="generateRandomAvatarsButton">CLICK ME FOR NEW EMOJIS!!</button><br>
+        </div>
+        <button @click="showCreateGameModal = false">X</button>
+      </div>
+    </div>
+
+    <div>
+      <div v-if="showJoinGameModal" class="modal">
+        <div class="modalContent">
+          <form @submit.prevent="joinGame()">
             <label for="playerName">Player Name:</label><br>
             <input type="text" id="playerName" v-model="playerName" required="required"><br><br>
             <label for="gameCode">Game Code:</label><br>
-            <input type="text" id="gameCode" v-model="gameCode" required="required"><br><br>
+            <input type="text" id="gameCode" v-model="joinGameCode" required="required"><br><br>
             <label for="avatar">Pick a avatar:</label><br>
             <div class="avatarDiv">
-              <span class="avatars" v-for="emoji in avatars">
-                {{emoji}}</span>
-              <button @click="this.debounce() ;generateRandomAvatar" class="generateRandomAvatarsButton">CLICK ME FOR NEW EMOJIS!!</button><br>
+              <span class="avatars" v-for="(emoji,index) in avatars"
+                    :key="index">
+                <input type="radio" name="avatar" @click="chooseAvatar()">{{emoji}}</span>
             </div>
 
-            <input type="submit" value="Join!">
+            <button>Join Game</button>
           </form>
-          <button @click="showModal = false">X</button>
+          <button @click="this.debounce();
+                          generateRandomAvatar" class="generateRandomAvatarsButton">CLICK ME FOR NEW EMOJIS!!</button><br>
+          <button @click="showJoinGameModal = false">X</button>
         </div>
       </div>
     </div>
@@ -32,26 +69,38 @@
 </template>
 
 <script>
-/*import io from 'socket.io-client';
-const socket = io("localhost:3000");*/
+import io from "socket.io-client";
+const socket = io("http://127.0.0.1:3000");
+
 export default {
   name: "HomePageView",
   data:function() {
   return {
-      showModal: false,
+    showCreateGameModal: false,
+    showJoinGameModal: false,
       playerName: "",
       gameCode: "",
-      avatars: [],   }
+      joinGameCode: "",
+      avatars: [],
+      chosenAvatar: "",
+      gameSettings: {"rounds": 2,
+                      "time": 60,
+                      "teams": 1,}
+  }
   },
   created: function() {
     this.debounce =  this.debounceGenerateRandomAvatarButton(this.generateRandomAvatar, 1000)
   },
   methods: {
-    /*createGame: function () {
-      let gameLobbyCode = Math.random().toString(36).substring(2, 5) + Math.random().toString(36).substring(2, 5);
-      console.log(gameLobbyCode)
-      socket.emit("createGameButton", {gameLobbyCode: this.gameLobbyCode, lang: this.lang })
-    },*/
+    createGame: function (){
+      socket.emit("createGameLobby",this.playerName, this.gameCode,JSON.stringify(this.gameSettings), this.chosenAvatar);
+    },
+    joinGame: function () {
+      socket.emit("joinGame", this.playerName, this.joinGameCode, this.chosenAvatar)
+    },
+    generateGameCode: function () {
+      this.gameCode = Math.random().toString().substring(2, 10);
+    },
     debounceGenerateRandomAvatarButton: function(func, timeout) {
       let timer;
       return (...args) => {
@@ -59,6 +108,11 @@ export default {
         timer = setTimeout(() => { func.apply(this, args); }, timeout);
       };
 
+    },
+    chooseAvatar: function(avatar) {
+      if (!this.chosenAvatar === avatar) {
+        this.chosenAvatar = avatar;
+      }
     },
     generateRandomAvatar: function() {
       fetch("https://emoji-api.com/emojis?access_key=bd609ab5841ff29f856c7ce1ce62a1492bb00858\n")
@@ -73,7 +127,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style>
@@ -108,7 +161,7 @@ export default {
     height: 100%;
     background-color: rgba(0,0,0,0.9);
   }
-  .joinGameModalContent {
+  .modalContent {
     background-color: white;
     margin: 15% auto;
     width: 50%;
