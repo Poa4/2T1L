@@ -9,12 +9,10 @@ function sockets(io, socket, data) {
     socket.emit('init', data.getUILabels(lang));
   });
 
-  socket.on("createGame", function(d) {
-    console.log("works")
-  });
-
-  socket.on('createPoll', function(d) {
-    socket.emit('pollCreated', data.createPoll(d.pollId, d.lang));
+  socket.on('getGameInfo', function(pollId) { 
+    let gameInfo = data.getGameInfo(pollId);
+    socket.emit('pollCreated', gameInfo);
+    
   });
 
   socket.on('addQuestion', function(d) {
@@ -42,28 +40,35 @@ function sockets(io, socket, data) {
     data.submitAnswer(d.pollId, d.answer);
     io.to(d.pollId).emit('dataUpdate', data.getAnswers(d.pollId));
   });
-
+  socket.on('submitUserName', function(d) {
+    data.submitUserName(d.pollId, d.name, d.avatar);
+    let participents = data.getParticipents(d.pollId);
+    io.to(d.pollId).emit('participentsUpdate', participents);
+  });
+  socket.on('enterLobby', function(pollId){
+    let participents = data.getParticipents(pollId);
+    let gameOptions = data.getGameOptions(pollId);
+    socket.emit('currentRoomStatus', participents, gameOptions);
+  });
   socket.on('resetAll', () => {
     data = new Data();
     data.initializeData();
-  })
+  });
+  socket.on("GameOptionsChange", function(d){
+    data.editGameOptions(d.pollId, d.data)
+    io.to(d.pollId).emit("GOptionsChange", d.data)
+  });
+  socket.on("startGame", function(pollId){
+    io.to(pollId).emit("startGame")
+  });
 
-  socket.on("createGameLobby", (playerName, gameCode,gameSettings, chosenAvatar)=> {
-      socket.join(gameCode);
-      if (!data.gameLobbies[gameCode]){
-        data.gameLobbies[gameCode] = {"players": [], "gameSettings": gameSettings}
-        data.gameLobbies[gameCode].players.push({"playerName": playerName, "playerAvatar":chosenAvatar})
-      }
-    })
-    socket.on("joinGame", (playerName, gameCode ,chosenAvatar) => {
-      try {
-        socket.join(gameCode);
-        data.gameLobbies[gameCode].players.push({"playerName": playerName, "playerAvatar": chosenAvatar})
-        console.log(data.gameLobbies[gameCode].players);
-      }catch (error) {
-        console.error(error)
-      }
-    })
+  socket.on("createGameLobby", (playerName, gameCode, chosenAvatar)=> {
+    if (!data.polls[gameCode]){
+      data.createPoll(gameCode)
+      data.submitUserName(gameCode,playerName,chosenAvatar)
+    }
+  })
+ 
 }
 
 export { sockets };

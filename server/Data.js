@@ -5,7 +5,6 @@ import {readFileSync} from "fs";
 // Store data in an object to keep the global namespace clean
 function Data() {
   this.polls = {};
-  this.gameLobbies = {};
   this.polls["test"] = {
     lang: "en",
     questions: [{q: "How old are you?",
@@ -59,7 +58,13 @@ Data.prototype.createPoll = function(pollId, lang="en") {
     this.polls[pollId] = poll;
     console.log("poll created", pollId, poll);
   }
-  return this.polls[pollId];
+}
+Data.prototype.getGameInfo = function(pollId){
+  if (typeof this.polls[pollId] !== "undefined") {
+    return this.polls[pollId]
+  }
+  return {}
+
 }
 
 Data.prototype.editGameOptions = function(pollId, data){
@@ -84,13 +89,13 @@ Data.prototype.addQuestion = function(pollId, q) {
     poll.questions.push(q);
   }
 }
-Data.prototype.submitUserName = function(pollId, name) {
+Data.prototype.submitUserName = function(pollId, name, avatar) {
   const poll = this.polls[pollId];
   console.log("new user added to", pollId, name);
   if (typeof poll !== 'undefined') {
     let participent = {
       name: name,
-      //avatar??
+      avatar: avatar,
       answers: []
     }
     poll.participents.push(participent);

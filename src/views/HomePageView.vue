@@ -94,9 +94,11 @@ export default {
   methods: {
     createGame: function (){
       socket.emit("createGameLobby",this.playerName, this.gameCode,JSON.stringify(this.gameSettings), this.chosenAvatar);
+      this.$router.push("/create/" + this.gameCode)
     },
     joinGame: function () {
-      socket.emit("joinGame", this.playerName, this.joinGameCode, this.chosenAvatar)
+      socket.emit("submitUserName", {pollId: this.joinGameCode, name: this.playerName, avatar: this.chosenAvatar});
+      this.$router.push("/lobby/" + this.joinGameCode)
     },
     generateGameCode: function () {
       this.gameCode = Math.random().toString().substring(2, 10);

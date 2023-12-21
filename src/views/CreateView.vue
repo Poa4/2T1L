@@ -158,9 +158,6 @@ export default {
       teams: false,
       teamText: "No Team",
       participents: []
-
-
-      
     }
   },
   created: function () {
@@ -170,13 +167,19 @@ export default {
     socket.on("init", (labels) => {
       this.uiLabels = labels
     });
+    socket.emit("getGameInfo", this.pollId);
     socket.on("dataUpdate", (data) =>
       this.data = data
     );
-    socket.on("pollCreated", (data) =>
-      this.data = data);
-    socket.on("participentsUpdate", (participents) => 
-    this.participents = participents);
+    socket.on("pollCreated", (data) =>{
+      this.data = data;
+      this.participents = data.participents;
+    });
+    socket.on("participentsUpdate", (participents) => {
+      console.log(participents)
+      this.participents = participents;
+    })
+
   },
   components: {
       QrcodeVue
@@ -351,3 +354,5 @@ font-size: 0.8;
 
 
 </style>
+
+
