@@ -6,6 +6,34 @@ import {readFileSync} from "fs";
 function Data() {
   this.polls = {};
   this.gameLobbies = {};
+  this.polls["test"] = {
+    lang: "en",
+    questions: [{q: "How old are you?",
+                 a: ["1","2","3","4"]
+                },
+                {q: "what weekday is it today",
+                 a: ["monday,tuesday,wednesday"]
+                }
+                 ],
+    answers: [],
+    currentQuestion: 0,
+    participents: [],
+    gameOptions: {time: 5, rounds: 30, teams: false}
+    
+  };
+  this.polls["2"] = {
+    lang: "en",
+    questions: [{q: "How old are you?",
+                 a: ["5","6","7","8"]
+                },
+                {q: "what weekday is it today",
+                 a: ["monday,tuesday,wednesday"]
+                }
+                 ],
+    answers: [],
+    currentQuestion: 0,
+    participents: []
+  }
 }
 
 /***********************************************
@@ -25,11 +53,28 @@ Data.prototype.createPoll = function(pollId, lang="en") {
     poll.lang = lang;  
     poll.questions = [];
     poll.answers = [];
-    poll.currentQuestion = 0;              
+    poll.currentQuestion = 0;
+    poll.participents = [];
+    poll.gameOptions = {time: 5, rounds: 30, teams: false};
     this.polls[pollId] = poll;
     console.log("poll created", pollId, poll);
   }
   return this.polls[pollId];
+}
+
+Data.prototype.editGameOptions = function(pollId, data){
+  const poll = this.polls[pollId];
+  if (typeof poll !== 'undefined') {
+    poll.gameOptions = data
+  }
+}
+
+Data.prototype.getGameOptions = function(pollId){
+  const poll = this.polls[pollId];
+  if (typeof poll !== 'undefined') {
+    return poll.gameOptions;
+  }
+  return {}
 }
 
 Data.prototype.addQuestion = function(pollId, q) {
@@ -39,7 +84,25 @@ Data.prototype.addQuestion = function(pollId, q) {
     poll.questions.push(q);
   }
 }
-
+Data.prototype.submitUserName = function(pollId, name) {
+  const poll = this.polls[pollId];
+  console.log("new user added to", pollId, name);
+  if (typeof poll !== 'undefined') {
+    let participent = {
+      name: name,
+      //avatar??
+      answers: []
+    }
+    poll.participents.push(participent);
+  }
+}
+Data.prototype.getParticipents = function(pollId) {
+  const poll = this.polls[pollId];
+  if (typeof poll !== 'undefined') {
+    return poll.participents;
+  }
+  return []
+}
 Data.prototype.editQuestion = function(pollId, index, newQuestion) {
   const poll = this.polls[pollId];
   if (typeof poll !== 'undefined') {

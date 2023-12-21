@@ -10,19 +10,39 @@ const router = createRouter({
       component: HomePageView
     },
       {
-      path: '/poll/:id',
+      path: '/poll/:id/:uid',
       name: 'PollView',
       component: () => import('../views/PollView.vue')
     },
     {
-      path: '/create/',
+      path: '/lobby/:id',
+      name: 'LobbyView',
+      component: () => import('../views/WaitingRoom.vue')
+    },
+    {
+      path: '/create/:id',
       name: 'CreateView',
       component: () => import('../views/CreateView.vue')
+    },
+    {
+      path: '/InsertTruths/:uid',
+      name: 'insertTruths',
+      component: () => import('../views/InsertTruths.vue')
     },
     {
       path: '/result/:id',
       name: 'ResultView',
       component: () => import('../views/ResultView.vue')
+    },
+    {
+      path: '/homePageView',
+      name: 'HomePage',
+      component: () => import('../views/HomePageView.vue')
+    },
+    {
+      path: '/test/',
+      name: 'VanjaView',
+      component: () => import('../Vanja.vue')
     }
   ]
 })
