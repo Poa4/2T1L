@@ -54,7 +54,7 @@ Data.prototype.createPoll = function(pollId, lang="en") {
     poll.answers = [];
     poll.currentQuestion = 0;
     poll.participents = [];
-    poll.gameOptions = {time: 5, rounds: 30, teams: false};
+    poll.gameOptions = {time: 30, rounds: 5, teams: false};
     this.polls[pollId] = poll;
     console.log("poll created", pollId, poll);
   }

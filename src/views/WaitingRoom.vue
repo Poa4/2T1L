@@ -30,7 +30,6 @@
           <p class="gameOptions">
               {{ teams }}
           </p>
-
         </div>
       </section>
 
@@ -134,12 +133,7 @@ Poll link:
     });
         socket.on("participentsUpdate", (participents) =>
         this.participents = participents);
-        socket.on("currentRoomStatus", (participents, gameOptions) => {
-          this.participents = participents;
-          this.rounds = gameOptions.rounds;
-          this.time = gameOptions.time;
-          this.teams = gameOptions.teams;
-        })
+
         socket.on("GOptionsChange", (data) => {
           this.rounds = data.rounds;
           this.time = data.time;
@@ -148,6 +142,13 @@ Poll link:
         socket.on("startGame", () => this.$router.push("/InsertTruths/" + this.userName))
         socket.emit("joinPoll", this.pollId);
         socket.emit("enterLobby", this.pollId);
+        socket.on("currentRoomStatus", (participents, gameOptions) => {
+          console.log(gameOptions);
+          this.participents = participents;
+          this.rounds = gameOptions.rounds;
+          this.time = gameOptions.time;
+          this.teams = gameOptions.teams;
+        });
     },
     methods: {
       submitUserName: function () {
