@@ -20,6 +20,11 @@ const router = createRouter({
       component: () => import('../views/WaitingRoom.vue')
     },
     {
+      path: '/lobby/:id/',
+      name: 'LobbyViewWithoutUserName',
+      component: () => import('../views/JoinWaitingRoomThroughLink.vue')
+    },
+    {
       path: '/create/:id/:uid',
       name: 'CreateView',
       component: () => import('../views/CreateView.vue')

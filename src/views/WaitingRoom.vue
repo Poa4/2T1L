@@ -100,7 +100,7 @@ Poll link:
 </div>-->
 </template>
   
-  <script>
+<script>
   // @ is an alias to /src
   import io from 'socket.io-client';
   import QrcodeVue from "qrcode.vue";
@@ -116,8 +116,8 @@ Poll link:
         uiLabels: {},
         lang: localStorage.getItem("lang" || "en"),
         participents: [],
-        website: "http://localhost:5173/lobby/test",
-        QRvalue: "http://localhost:5173/lobby/test",
+        website: "http://localhost:5173/lobby/",
+        QRvalue: "",
         rounds: 5,
         time: 30,
         teams: false,
@@ -126,6 +126,8 @@ Poll link:
     created: function () {
         this.pollId = this.$route.params.id;
         this.userName = this.$route.params.uid;
+        this.website = this.website + this.pollId;
+        this.QRvalue = this.website;
         socket.emit("pageLoaded", this.lang);
         socket.on("init", (labels) => {
         this.uiLabels = labels

@@ -148,8 +148,8 @@ export default {
       questionNumber: 0,
       data: {},
       uiLabels: {},
-      website: "http://localhost:5173/lobby/test",
-      QRvalue: "http://google.se",
+      website: "http://localhost:5173/lobby/",
+      QRvalue: "",
       showRoundsForm: false,
       showTimeForm: false,
       showTeamForm: false,
@@ -163,6 +163,8 @@ export default {
   created: function () {
     this.pollId = this.$route.params.id;
     this.userName = this.$route.params.uid;
+    this.website = this.website + this.pollId;
+    this.QRvalue = this.website;
     socket.emit("pageLoaded", this.lang);
     socket.emit("joinPoll", this.pollId);
     socket.on("init", (labels) => {
