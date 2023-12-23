@@ -69,7 +69,7 @@
           <section class="wrapper3">
             <div class="participentArea">
                 <p v-for="participent in participents">
-                  {{participent.name}}
+                  {{participent.name}} {{ participent.avatar}}
                 </p>
             </div>
 
@@ -179,8 +179,8 @@ export default {
       this.participents = data.participents;
     });
     socket.on("participentsUpdate", (participents) => {
-      console.log(participents)
       this.participents = participents;
+      console.log(participents)
     })
 
   },

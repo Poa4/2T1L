@@ -62,10 +62,10 @@ function sockets(io, socket, data) {
     io.to(pollId).emit("startGame")
   });
 
-  socket.on("createGameLobby", (playerName, gameCode, chosenAvatar)=> {
-    if (!data.polls[gameCode]){
-      data.createPoll(gameCode)
-      data.submitUserName(gameCode,playerName,chosenAvatar)
+  socket.on("createGameLobby", (d)=> {
+    if (!data.polls[d.pollId]){
+      data.createPoll(d.pollId)
+      data.submitUserName(d.pollId,d.name,d.avatar)
     }
   })
  

@@ -19,7 +19,7 @@
           <label for="avatar">Pick a avatar:</label><br>
           <div class="avatarDiv">
               <span class="avatars" v-for="emoji in avatars">
-                <input type="radio" name="avatar"  @click="chooseAvatar()" required="required">{{emoji}}</span>
+                <input type="radio" name="avatar"  @click="chooseAvatar(emoji)" required="required">{{emoji}}</span>
           </div>
           <div class="gameSettings">
             <label for="rounds">Number of rounds:</label><br>
@@ -32,7 +32,7 @@
             <button>Create Game</button>
           </form>
 
-          <button @click="this.debounce();
+          <button @click="this.debounce(),
                           generateRandomAvatar" class="generateRandomAvatarsButton">CLICK ME FOR NEW EMOJIS!!</button><br>
         </div>
         <button @click="showCreateGameModal = false">X</button>
@@ -51,12 +51,12 @@
             <div class="avatarDiv">
               <span class="avatars" v-for="(emoji,index) in avatars"
                     :key="index">
-                <input type="radio" name="avatar" @click="chooseAvatar()">{{emoji}}</span>
+                <input type="radio" name="avatar" @click="chooseAvatar(emoji)">{{emoji}}</span>
             </div>
 
             <button>Join Game</button>
           </form>
-          <button @click="this.debounce();
+          <button @click="this.debounce(),
                           generateRandomAvatar" class="generateRandomAvatarsButton">CLICK ME FOR NEW EMOJIS!!</button><br>
           <button @click="showJoinGameModal = false">X</button>
         </div>
@@ -93,7 +93,7 @@ export default {
   },
   methods: {
     createGame: function (){
-      socket.emit("createGameLobby",this.playerName, this.gameCode,JSON.stringify(this.gameSettings), this.chosenAvatar);
+      socket.emit("createGameLobby",{pollId: this.gameCode, name: this.playerName, avatar: this.chosenAvatar});
       this.$router.push("/create/" + this.gameCode + "/" +this.playerName)
     },
     joinGame: function () {
@@ -112,9 +112,8 @@ export default {
 
     },
     chooseAvatar: function(avatar) {
-      if (!this.chosenAvatar === avatar) {
         this.chosenAvatar = avatar;
-      }
+        console.log(this.chosenAvatar);
     },
     generateRandomAvatar: function() {
       fetch("https://emoji-api.com/emojis?access_key=bd609ab5841ff29f856c7ce1ce62a1492bb00858\n")

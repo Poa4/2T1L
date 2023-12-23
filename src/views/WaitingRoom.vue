@@ -36,7 +36,7 @@
       <section class="wrapper3">
         <div class="participentArea">
             <p v-for="participent in participents">
-              {{participent.name}}
+              {{participent.name}} {{ participent.avatar}}
             </p>
         </div>
 
@@ -131,8 +131,8 @@ Poll link:
         socket.on("init", (labels) => {
         this.uiLabels = labels
     });
-        socket.on("participentsUpdate", (participents) =>
-        this.participents = participents);
+        socket.emit("joinPoll", this.pollId);
+        socket.emit("enterLobby", this.pollId);
 
         socket.on("GOptionsChange", (data) => {
           this.rounds = data.rounds;
@@ -140,14 +140,15 @@ Poll link:
           this.teams = data.teams;
         });
         socket.on("startGame", () => this.$router.push("/InsertTruths/" + this.userName))
-        socket.emit("joinPoll", this.pollId);
-        socket.emit("enterLobby", this.pollId);
         socket.on("currentRoomStatus", (participents, gameOptions) => {
-          console.log(gameOptions);
           this.participents = participents;
           this.rounds = gameOptions.rounds;
           this.time = gameOptions.time;
           this.teams = gameOptions.teams;
+        });
+        socket.on("participentsUpdate", (participents) =>{
+          this.participents = participents;
+          console.log(this.participents);
         });
     },
     methods: {
