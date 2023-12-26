@@ -45,9 +45,9 @@ const router = createRouter({
       component: () => import('../views/HomePageView.vue')
     },
     {
-      path: '/test/',
-      name: 'VanjaView',
-      component: () => import('../Vanja.vue')
+      path: '/highscore/',
+      name: 'HighScoreView',
+      component: () => import('../HighScore.vue')
     }
   ]
 })
