@@ -4,7 +4,7 @@
     </header>
 
 <main class="headline">
-{{addToHighScore({"participant": "Vanja Natvig", "score":0})}}
+<p>{{addToHighScore({"participant": "Vanja Natvig", "score":0})}}</p> <!-- Exempel på input -->
     <p v-for="(item, index) in sortedHighScore(highScoreList)">
      {{ index + 1}}:a {{ item.participant }} - {{ item.score }} poäng
     </p>
