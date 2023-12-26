@@ -1,13 +1,13 @@
 <template>
   <body>
   <div class="playGameDiv">
-    <h1 class="gameTitle">2 Lies and 1 Truth</h1>
+    <h1 class="gameTitle">2 Truths and 1 Lie</h1>
     <button @click="showCreateGameModal = true;
                     generateRandomAvatar();
                     generateGameCode();" class="createGameButton">Create Game</button>
     <button @click="showJoinGameModal = true;
                     generateRandomAvatar();
-                    " class="joinGameButton">Join Game</button>
+                    " class="joinGameButton">Join <br> Game</button>
     <div>
       <div v-if="showCreateGameModal" class="modal">
         <div class="modalContent">
@@ -35,7 +35,7 @@
           <button @click="this.debounce(),
                           generateRandomAvatar" class="generateRandomAvatarsButton">CLICK ME FOR NEW EMOJIS!!</button><br>
         </div>
-        <button @click="showCreateGameModal = false">X</button>
+        <button @click="showCreateGameModal = false" class="exitButton">X</button>
       </div>
     </div>
 
@@ -58,7 +58,7 @@
           </form>
           <button @click="this.debounce(),
                           generateRandomAvatar" class="generateRandomAvatarsButton">CLICK ME FOR NEW EMOJIS!!</button><br>
-          <button @click="showJoinGameModal = false">X</button>
+          <button @click="showJoinGameModal = false" class="exitButton">X</button>
         </div>
       </div>
     </div>
@@ -132,23 +132,29 @@ export default {
 
 <style>
   body {
+    background-color: #1E152A;
+
   }
   .playGameDiv {
     display: grid;
-    grid-template-rows: 100px 100px 100px;
+    grid-template-rows: 200% 100% 100%;
     grid-template-columns:100px 100px 100px;
     justify-content: center;
     align-items: center;
   }
   .gameTitle {
+    color: white ;
     grid-column: 1/3;
     grid-row: 1/3;
+    text-align: center;
+    text-shadow: 2px 2px 5px #DA4167
   }
   .createGameButton {
     grid-column: 1/2;
     grid-row: 2/2;
   }
   .joinGameButton {
+    
     grid-column: 2/2;
     grid-row: 2/2;
   }
@@ -160,12 +166,14 @@ export default {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.9);
+    background-color: rgba(0,0,0,0.0);
+
   }
   .modalContent {
-    background-color: white;
+    background-color: #1E152A;
     margin: 15% auto;
     width: 50%;
+    color:white;
   }
   .avatarDiv {
     display: grid;
@@ -177,5 +185,19 @@ export default {
   .generateRandomAvatarsButton {
     grid-column: 1/5;
   }
+  button{
+    background: #DA4167;
+    font-size: 100%;
+    padding: 5%;
+    width: 100%;
+    border-radius: 12px;
+  }
+  button:hover{
+    color:white;
+  }
+  .exitButton {
+    width: 30%;
+  }
+
 
 </style>
