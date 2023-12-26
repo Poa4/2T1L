@@ -113,7 +113,7 @@ export default {
     },
     chooseAvatar: function(avatar) {
         this.chosenAvatar = avatar;
-        console.log(this.chosenAvatar);
+        
     },
     generateRandomAvatar: function() {
       fetch("https://emoji-api.com/emojis?access_key=bd609ab5841ff29f856c7ce1ce62a1492bb00858\n")
