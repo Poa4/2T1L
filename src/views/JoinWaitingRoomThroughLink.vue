@@ -9,7 +9,7 @@
             <div class="avatarDiv">
               <span class="avatars" v-for="(emoji,index) in avatars"
                     :key="index">
-                <input type="radio" name="avatar" @click="chooseAvatar()">{{emoji}}</span>
+                <input type="radio" name="avatar" @click="chooseAvatar(emoji)">{{emoji}}</span>
             </div>
 
             <button>Join Game</button>
@@ -52,7 +52,6 @@ export default {
         clearTimeout(timer);
         timer = setTimeout(() => { func.apply(this, args); }, timeout);
       };
-
     },
     chooseAvatar: function(avatar) {
       if (!this.chosenAvatar === avatar) {
