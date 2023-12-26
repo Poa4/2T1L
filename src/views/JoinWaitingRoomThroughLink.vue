@@ -9,7 +9,7 @@
             <div class="avatarDiv">
               <span class="avatars" v-for="(emoji,index) in avatars"
                     :key="index">
-                <input type="radio" name="avatar" @click="chooseAvatar()">{{emoji}}</span>
+                <input type="radio" name="avatar" @click="chooseAvatar(emoji)">{{emoji}}</span>
             </div>
 
             <button>Join Game</button>
@@ -55,9 +55,7 @@ export default {
 
     },
     chooseAvatar: function(avatar) {
-      if (!this.chosenAvatar === avatar) {
         this.chosenAvatar = avatar;
-      }
     },
     generateRandomAvatar: function() {
       fetch("https://emoji-api.com/emojis?access_key=bd609ab5841ff29f856c7ce1ce62a1492bb00858\n")

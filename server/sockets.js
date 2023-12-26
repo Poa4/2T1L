@@ -11,8 +11,7 @@ function sockets(io, socket, data) {
 
   socket.on('getGameInfo', function(pollId) { 
     let gameInfo = data.getGameInfo(pollId);
-    socket.emit('pollCreated', gameInfo);
-    
+    socket.emit('pollCreated', gameInfo);   
   });
 
   socket.on('addQuestion', function(d) {
@@ -40,6 +39,7 @@ function sockets(io, socket, data) {
     data.submitAnswer(d.pollId, d.answer);
     io.to(d.pollId).emit('dataUpdate', data.getAnswers(d.pollId));
   });
+
   socket.on('submitUserName', function(d) {
     data.submitUserName(d.pollId, d.name, d.avatar);
     let participents = data.getParticipents(d.pollId);
@@ -50,14 +50,17 @@ function sockets(io, socket, data) {
     let gameOptions = data.getGameOptions(pollId);
     socket.emit('currentRoomStatus', participents, gameOptions);
   });
+
   socket.on('resetAll', () => {
     data = new Data();
     data.initializeData();
   });
+
   socket.on("GameOptionsChange", function(d){
     data.editGameOptions(d.pollId, d.data)
     io.to(d.pollId).emit("GOptionsChange", d.data)
   });
+  
   socket.on("startGame", function(pollId){
     io.to(pollId).emit("startGame")
   });
