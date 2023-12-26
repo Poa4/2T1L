@@ -219,9 +219,8 @@ export default {
       this.sendUpdatedGameOptions();
     },
     start: function() {
-      console.log(this.pollId);
       socket.emit("startGame", this.pollId)
-      this.$router.push("/InsertTruths/" + this.userName)
+      this.$router.push("/InsertTruths/" + this.pollId + "/" + this.userName)
     },
     sendUpdatedGameOptions: function(){
       socket.emit("GameOptionsChange", {pollId: this.pollId, data: {rounds: this.rounds, time: this.time, teams: this.teams}})

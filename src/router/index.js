@@ -30,7 +30,7 @@ const router = createRouter({
       component: () => import('../views/CreateView.vue')
     },
     {
-      path: '/InsertTruths/:uid',
+      path: '/InsertTruths/:id/:uid',
       name: 'insertTruths',
       component: () => import('../views/InsertTruths.vue')
     },

@@ -139,7 +139,7 @@ Poll link:
           this.time = data.time;
           this.teams = data.teams;
         });
-        socket.on("startGame", () => this.$router.push("/InsertTruths/" + this.userName))
+        socket.on("startGame", () => this.$router.push("/InsertTruths/" + this.pollId + "/" + this.userName))
         socket.on("currentRoomStatus", (participents, gameOptions) => {
           this.participents = participents;
           this.rounds = gameOptions.rounds;
