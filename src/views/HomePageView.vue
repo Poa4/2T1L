@@ -14,22 +14,16 @@
   <div v-if="showCreateGameModal" class="modal">
   <div class="modalContent">
   <form @submit.prevent="createGame()">
-  <label for="playerName">Player Name:</label><br>
-  <input type="text" id="playerName" v-model="playerName" required="required"><br><br>
-  <label for="gameCode">Game Code:</label><br>
-  <input type="text" id="gameCode" v-model="gameCode" readonly><br><br>
+  <label for="playerName">Choose your nickname</label><br>
+  <input type="text" id="playerName" v-model="playerName" placeholder="Name" required="required"><br><br>
+  <label for="gameCode">Enter the room code:</label><br>
+  <input type="text" id="gameCode" placeholder="Code" v-model="gameCode" readonly><br><br>
   <label for="avatar">Pick a avatar:</label><br>
   <div class="avatarDiv">
   <span class="avatars" v-for="emoji in avatars">
   <input type="radio" name="avatar" @click="chooseAvatar(emoji)" required="required">{{emoji}}</span>
   </div>
   <div class="gameSettings">
-  <label for="rounds">Number of rounds:</label><br>
-  <input type="number" id="rounds" v-model="gameSettings.rounds" required="required" :min="1"><br><br>
-  <label for="time">Time per round:</label><br>
-  <input type="number" id="rounds" v-model="gameSettings.time" required="required" :min="60"><br><br>
-  <label for="teams">Number of teams:</label><br>
-  <input type="number" id="rounds" v-model="gameSettings.teams" required="required" :min="1"><br><br>
   </div>
   <button>Create Game</button>
   </form>
@@ -48,10 +42,10 @@
   <div v-if="showJoinGameModal" class="modal">
   <div class="modalContent">
   <form @submit.prevent="joinGame()">
-  <label for="playerName">Player Name:</label><br>
-  <input type="text" id="playerName" v-model="playerName" required="required"><br><br>
-  <label for="gameCode">Game Code:</label><br>
-  <input type="text" id="gameCode" v-model="joinGameCode" required="required"><br><br>
+  <label for="playerName">Choose your nickname</label><br>
+  <input type="text" id="playerName" placeholder="Name" v-model="playerName" required="required"><br><br>
+  <label for="gameCode">Enter the room code:</label><br>
+  <input type="text" id="gameCode" placeholder="Code" v-model="joinGameCode" required="required"><br><br>
   <label for="avatar">Pick a avatar:</label><br>
   <div class="avatarDiv">
   <span class="avatars" v-for="(emoji,index) in avatars"
@@ -196,12 +190,12 @@ h1{
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: #1E152A;
+  background-color: rgb(39, 3, 63);
   
   
   }
   .modalContent {
-  background-color: #1E152A;
+  background-color: rgb(39, 3, 63);
   margin: 15% auto;
   width: 50%;
   color:white;
@@ -219,7 +213,7 @@ h1{
   
   }
   button{
-  background: #DA4167;
+  background: rgb(237, 40, 135);
   font-size: 120%;
   padding: 1%;
   width: 300px;
@@ -233,6 +227,14 @@ h1{
   width: 100px;
   }
   
+  input[type=text] {
+    padding: 12px 20px;
+    background-color: lightgrey;
+  }
+
+  input[type=text]:focus {
+    background-color: white;
+  }
   
   
   
