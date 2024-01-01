@@ -1,33 +1,29 @@
 <template>
   <body>
   <div class="playGameDiv">
-  <h1 class="gameTitle">2 Truths and 1 Lie</h1>
+  <h1 class="gameTitle">2 Truths<br>&<br>1 Lie</h1>
+  <div class="frontButtons">
   <button @click="showCreateGameModal = true;
   generateRandomAvatar();
   generateGameCode();" class="createGameButton">Create Game</button>
   <button @click="showJoinGameModal = true;
   generateRandomAvatar();
-  " class="joinGameButton">Join <br> Game</button>
+  " class="joinGameButton">Join Game</button>
+  </div>
   <div>
   <div v-if="showCreateGameModal" class="modal">
   <div class="modalContent">
   <form @submit.prevent="createGame()">
-  <label for="playerName">Player Name:</label><br>
-  <input type="text" id="playerName" v-model="playerName" required="required"><br><br>
-  <label for="gameCode">Game Code:</label><br>
-  <input type="text" id="gameCode" v-model="gameCode" readonly><br><br>
+  <label for="playerName">Choose your nickname</label><br>
+  <input type="text" id="playerName" v-model="playerName" placeholder="Name" required="required"><br><br>
+  <label for="gameCode">Enter the room code:</label><br>
+  <input type="text" id="gameCode" placeholder="Code" v-model="gameCode" readonly><br><br>
   <label for="avatar">Pick a avatar:</label><br>
   <div class="avatarDiv">
   <span class="avatars" v-for="emoji in avatars">
   <input type="radio" name="avatar" @click="chooseAvatar(emoji)" required="required">{{emoji}}</span>
   </div>
   <div class="gameSettings">
-  <label for="rounds">Number of rounds:</label><br>
-  <input type="number" id="rounds" v-model="gameSettings.rounds" required="required" :min="1"><br><br>
-  <label for="time">Time per round:</label><br>
-  <input type="number" id="rounds" v-model="gameSettings.time" required="required" :min="60"><br><br>
-  <label for="teams">Number of teams:</label><br>
-  <input type="number" id="rounds" v-model="gameSettings.teams" required="required" :min="1"><br><br>
   </div>
   <button>Create Game</button>
   </form>
@@ -35,8 +31,9 @@
   
   <button @click="this.debounce(),
   generateRandomAvatar" class="generateRandomAvatarsButton">CLICK ME FOR NEW EMOJIS!!</button><br>
-  </div>
+  
   <button @click="showCreateGameModal = false" class="exitButton">X</button>
+  </div>
   </div>
   </div>
   
@@ -45,10 +42,10 @@
   <div v-if="showJoinGameModal" class="modal">
   <div class="modalContent">
   <form @submit.prevent="joinGame()">
-  <label for="playerName">Player Name:</label><br>
-  <input type="text" id="playerName" v-model="playerName" required="required"><br><br>
-  <label for="gameCode">Game Code:</label><br>
-  <input type="text" id="gameCode" v-model="joinGameCode" required="required"><br><br>
+  <label for="playerName">Choose your nickname</label><br>
+  <input type="text" id="playerName" placeholder="Name" v-model="playerName" required="required"><br><br>
+  <label for="gameCode">Enter the room code:</label><br>
+  <input type="text" id="gameCode" placeholder="Code" v-model="joinGameCode" required="required"><br><br>
   <label for="avatar">Pick a avatar:</label><br>
   <div class="avatarDiv">
   <span class="avatars" v-for="(emoji,index) in avatars"
@@ -146,25 +143,44 @@
   }
   .playGameDiv {
   display: grid;
-  grid-template-rows: 200% 100% 100%;
-  grid-template-columns:100px 100px 100px;
+  grid-template-rows: 200px 300px ;
+  grid-template-columns:100px 300px 100px;
   justify-content: center;
   align-items: center;
   }
   .gameTitle {
   color: white ;
-  grid-column: 1/3;
-  grid-row: 1/3;
+  grid-column: 2/3;
+  grid-row: 2/2;
   text-align: center;
   text-shadow: 2px 2px 5px #DA4167
   }
+h1{
+  font-size: 400%;
+}
+  .frontButtons{
+  display:grid;
+  grid-template-rows: 1000px 100px 100px;
+  grid-template-columns:500px 200px 100px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  column-gap: 20px;
+  row-gap: 20px;
+  }
   .createGameButton {
-  grid-column: 1/2;
-  grid-row: 2/2;
+  grid-column: 2/3;
+  grid-row: 2/3;
+  font-size:x-large;
+  width: 100%;
+  height: 100%;
   }
   .joinGameButton {
-  grid-column: 2/2;
-  grid-row: 2/2;
+  grid-column: 2/3;
+  grid-row: 3/3;
+  font-size: x-large;
+  width: 100%;
+  height: 100%;
   }
   .modal {
   display: block;
@@ -174,12 +190,12 @@
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.0);
+  background-color: rgb(39, 3, 63);
   
   
   }
   .modalContent {
-  background-color: #1E152A;
+  background-color: rgb(39, 3, 63);
   margin: 15% auto;
   width: 50%;
   color:white;
@@ -194,21 +210,31 @@
   }
   .generateRandomAvatarsButton {
   grid-column: 1/5;
+  
   }
   button{
-  background: #DA4167;
-  font-size: 100%;
-  padding: 5%;
-  width: 100%;
+  background: rgb(237, 40, 135);
+  font-size: 120%;
+  padding: 1%;
+  width: 300px;
   border-radius: 12px;
+  margin: 4px 4px;
   }
   button:hover{
   color:white;
   }
   .exitButton {
-  width: 30%;
+  width: 100px;
   }
   
+  input[type=text] {
+    padding: 12px 20px;
+    background-color: lightgrey;
+  }
+
+  input[type=text]:focus {
+    background-color: white;
+  }
   
   
   
