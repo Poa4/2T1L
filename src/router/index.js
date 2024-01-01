@@ -45,20 +45,9 @@ const router = createRouter({
       component: () => import('../views/HomePageView.vue')
     },
     {
-<<<<<<< HEAD
-      path: '/test/',
-      name: 'VanjaView',
-      component: () => import('../Vanja.vue')
-    },
-    {
       path: '/spotTheLie/:id/:uid',
       name: 'spotTheLie',
       component: () => import("../views/SpotTheLie.vue")
-=======
-      path: '/highscore/',
-      name: 'HighScoreView',
-      component: () => import('../HighScore.vue')
->>>>>>> 98075d1657251a1e79c8e6385594f8ede4a4e547
     }
   ]
 })

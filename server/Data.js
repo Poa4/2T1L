@@ -97,9 +97,6 @@ Data.prototype.addQuestion2 = function(pollId, questionaire){
   if (typeof poll !== 'undefined') {
     poll.questions.push(questionaire);
   }
-  for(let i=0; i<poll.gameOptions.rounds; i++){
-    console.log(poll.questions[i])
-  }
 }
 
 

@@ -4,7 +4,7 @@
     <div class="timer">
     </div>
         <main>
-            <form>
+            <div v-if="editWindow">
             <div class="insert">
             <label for="truth1"></label>
                         <input type="text" id="truth1" v-model="truth1" name="t1" required="required" placeholder="truth1" ><br>
@@ -12,15 +12,18 @@
                         <input type="text" id="truth2" v-model="truth2" name="t2" required="required" placeholder="truth2" ><br>
             <label for="lie"></label>
                         <input type="text" id="lie" v-model="lie" name="lie" required="required" placeholder="lie" ><br>
-            </div>      
-            </form>
-            <button v-on:click="prev">Prev</button>
-            <button v-on:click="next">Next</button>  
+            </div> 
+            <button v-on:click="prev" :disabled="b1Disabled">Prev</button>
+            <button v-on:click="next" :disabled="b2Disabled">Next</button>  
             <button type="submit" v-on:click="submit">
             Lock in answers
-            </button>
+            </button>     
+          </div>
 
-            <button v-on:click="t"> test </button>
+            <div v-if="!editWindow">
+            <button v-on:click="t"> test till nästa </button>
+            </div>
+
 
         </main>
         
@@ -40,8 +43,12 @@ export default {
       truth2: "",
       lie: "",
       questionaire: [],
-      numberOfRounds: 2,
+      numberOfRounds: 3,
       currentQuestion: 0,
+      b1Disabled: true,
+      b2Disabled: false,
+      editWindow: true
+
   }
   },
   created: function() {
@@ -53,8 +60,8 @@ export default {
     submit: function(){
       console.log(this.questionaire)
       if(this.questionaire.length === this.numberOfRounds){
-        socket.emit("sendQuestions", this.pollId, {userName: this.userName, questionaire: this.questionaire});
-        this.$router.push("/spotTheLie/" + this.pollId  + "/" + this.userName);
+        socket.emit("sendQuestions", this.pollId, {questionaire: this.questionaire});
+        this.editWindow = false;
       }
     },
 
@@ -65,6 +72,7 @@ export default {
       }
       //gets previous written question
       this.currentQuestion --;
+      this.changeButtons();
       this.getPrevAnswer();
       console.log(this.currentQuestion)
       }
@@ -76,6 +84,7 @@ export default {
       if(this.currentQuestion < this.numberOfRounds){
       this.addQuestion();
       this.currentQuestion ++;
+      this.changeButtons();
       //sets all to empty again if new
       if(typeof this.questionaire[this.currentQuestion] === "undefined"){
       this.truth1 = "";
@@ -105,7 +114,8 @@ export default {
       let question = {
         truth1: this.truth1,
         truth2: this.truth2,
-        lie: this.lie
+        lie: this.lie,
+        username: this.userName
       };
       this.questionaire.push(question);
     }
@@ -128,8 +138,26 @@ export default {
       this.truth1 = question.truth1;
       this.truth2 = question.truth2;
       this.lie = question.lie;
+  },
+  changeButtons: function(){
+    if(this.currentQuestion+1 === this.numberOfRounds){
+    this.b2Disabled = true;
+    }
+    else if(this.currentQuestion === 0){
+      this.b1Disabled = true;
+    }
+    else{
+      this.b1Disabled = false;
+      this.b2Disabled = false;
+    }
+    
+
+  },
+  t: function(){
+    this.$router.push("/spotTheLie/" + this.pollId  + "/" + this.userName); // får man ändra så den körs när alla är klara, eller
   }
   },
+
 
 }
     
@@ -163,4 +191,10 @@ export default {
     }
     .timer{
     color:white}
+
+    button[disabled]{
+    background: #5f5f5f;
+   }
+
+
     </style>
