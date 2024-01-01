@@ -1,13 +1,15 @@
 <template>
   <body>
   <div class="playGameDiv">
-  <h1 class="gameTitle">2 Truths and 1 Lie</h1>
+  <h1 class="gameTitle">2 Truths<br>&<br>1 Lie</h1>
+  <div class="frontButtons">
   <button @click="showCreateGameModal = true;
   generateRandomAvatar();
   generateGameCode();" class="createGameButton">Create Game</button>
   <button @click="showJoinGameModal = true;
   generateRandomAvatar();
-  " class="joinGameButton">Join <br> Game</button>
+  " class="joinGameButton">Join Game</button>
+  </div>
   <div>
   <div v-if="showCreateGameModal" class="modal">
   <div class="modalContent">
@@ -35,8 +37,9 @@
   
   <button @click="this.debounce(),
   generateRandomAvatar" class="generateRandomAvatarsButton">CLICK ME FOR NEW EMOJIS!!</button><br>
-  </div>
+  
   <button @click="showCreateGameModal = false" class="exitButton">X</button>
+  </div>
   </div>
   </div>
   
@@ -146,25 +149,44 @@
   }
   .playGameDiv {
   display: grid;
-  grid-template-rows: 200% 100% 100%;
-  grid-template-columns:100px 100px 100px;
+  grid-template-rows: 200px 300px ;
+  grid-template-columns:100px 300px 100px;
   justify-content: center;
   align-items: center;
   }
   .gameTitle {
   color: white ;
-  grid-column: 1/3;
-  grid-row: 1/3;
+  grid-column: 2/3;
+  grid-row: 2/2;
   text-align: center;
   text-shadow: 2px 2px 5px #DA4167
   }
+h1{
+  font-size: 400%;
+}
+  .frontButtons{
+  display:grid;
+  grid-template-rows: 1000px 100px 100px;
+  grid-template-columns:500px 200px 100px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  column-gap: 20px;
+  row-gap: 20px;
+  }
   .createGameButton {
-  grid-column: 1/2;
-  grid-row: 2/2;
+  grid-column: 2/3;
+  grid-row: 2/3;
+  font-size:x-large;
+  width: 100%;
+  height: 100%;
   }
   .joinGameButton {
-  grid-column: 2/2;
-  grid-row: 2/2;
+  grid-column: 2/3;
+  grid-row: 3/3;
+  font-size: x-large;
+  width: 100%;
+  height: 100%;
   }
   .modal {
   display: block;
@@ -174,7 +196,7 @@
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.0);
+  background-color: #1E152A;
   
   
   }
@@ -194,19 +216,21 @@
   }
   .generateRandomAvatarsButton {
   grid-column: 1/5;
+  
   }
   button{
   background: #DA4167;
-  font-size: 100%;
-  padding: 5%;
-  width: 100%;
+  font-size: 120%;
+  padding: 1%;
+  width: 300px;
   border-radius: 12px;
+  margin: 4px 4px;
   }
   button:hover{
   color:white;
   }
   .exitButton {
-  width: 30%;
+  width: 100px;
   }
   
   
