@@ -54,7 +54,7 @@ Data.prototype.createPoll = function(pollId, lang="en") {
     poll.answers = [];
     poll.currentQuestion = 0;
     poll.participents = [];
-    poll.gameOptions = {time: 30, rounds: 5, teams: false};
+    poll.gameOptions = {time: 30, rounds: 2, teams: false};
     this.polls[pollId] = poll;
     console.log("poll created", pollId, poll);
   }
@@ -89,6 +89,20 @@ Data.prototype.addQuestion = function(pollId, q) {
     poll.questions.push(q);
   }
 }
+
+
+Data.prototype.addQuestion2 = function(pollId, questionaire){
+  const poll = this.polls[pollId];
+  console.log("questionaire added", pollId, questionaire);
+  if (typeof poll !== 'undefined') {
+    poll.questions.push(questionaire);
+  }
+  for(let i=0; i<poll.gameOptions.rounds; i++){
+    console.log(poll.questions[i])
+  }
+}
+
+
 Data.prototype.submitUserName = function(pollId, name, avatar) {
   const poll = this.polls[pollId];
   console.log("new user added to", pollId, name);

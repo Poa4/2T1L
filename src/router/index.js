@@ -48,6 +48,11 @@ const router = createRouter({
       path: '/test/',
       name: 'VanjaView',
       component: () => import('../Vanja.vue')
+    },
+    {
+      path: '/spotTheLie/:id/:uid',
+      name: 'spotTheLie',
+      component: () => import("../views/SpotTheLie.vue")
     }
   ]
 })

@@ -70,6 +70,10 @@ function sockets(io, socket, data) {
       data.createPoll(d.pollId)
       data.submitUserName(d.pollId,d.name,d.avatar)
     }
+  });
+
+  socket.on("sendQuestions", function(pollId,questionaire){
+    data.addQuestion2(pollId ,questionaire);
   })
  
 }

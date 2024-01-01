@@ -20,12 +20,14 @@
             Lock in answers
             </button>
 
+            <button v-on:click="t"> test </button>
+
         </main>
         
     </body>
     </template>
     <script>
-    import io from "socket.io-client";
+import io from "socket.io-client";
 const socket = io("http://127.0.0.1:3000");
 
 export default {
@@ -38,7 +40,7 @@ export default {
       truth2: "",
       lie: "",
       questionaire: [],
-      numberOfRounds: 5,
+      numberOfRounds: 2,
       currentQuestion: 0,
   }
   },
@@ -49,8 +51,11 @@ export default {
   },
   methods: {
     submit: function(){
-      console.log(this.currentQuestion)
-      console.log(this.questionaire);
+      console.log(this.questionaire)
+      if(this.questionaire.length === this.numberOfRounds){
+        socket.emit("sendQuestions", this.pollId, {userName: this.userName, questionaire: this.questionaire});
+        this.$router.push("/spotTheLie/" + this.pollId  + "/" + this.userName);
+      }
     },
 
     prev: function(){
@@ -68,7 +73,7 @@ export default {
     next: function(){
     if(this.checkFields()){ //Checks so we have written in all fields before going to next
       //adds the question to list
-      if(this.currentQuestion < this.numberOfRounds-1){
+      if(this.currentQuestion < this.numberOfRounds){
       this.addQuestion();
       this.currentQuestion ++;
       //sets all to empty again if new
