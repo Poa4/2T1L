@@ -14,7 +14,9 @@ function Data() {
                  a: ["monday,tuesday,wednesday"]
                 }
                  ],
-    answers: [],
+    answers: {"truthOne": "",
+      "truthTwo": "",
+      "lie": ""},
     currentQuestion: 0,
     participents: [],
     gameOptions: {time: 5, rounds: 30, teams: false}
@@ -111,7 +113,9 @@ Data.prototype.submitUserName = function(pollId, name, avatar) {
     let participent = {
       name: name,
       avatar: avatar,
-      answers: []
+      answers: {"truthOne": "",
+        "truthTwo": "",
+        "lie": ""}
     }
     poll.participents.push(participent);
   }
@@ -169,6 +173,33 @@ Data.prototype.getAnswers = function(pollId) {
     }
   }
   return {}
+}
+Data.prototype.updateParticipants = function(pollId, participants) {
+  const poll = this.polls[pollId];
+  poll.participents = participants;
+}
+
+Data.prototype.lockInParticipantAnswers = function(pollId, username, truth1, truth2, lie) {
+  const poll = this.polls[pollId];
+  if (typeof poll !== 'undefined') {
+    let participantIndex = poll.participents.findIndex(participant => participant.name === username)
+    console.log(participantIndex)
+    if(participantIndex !== -1) {
+      poll.participents[participantIndex].answers = {"truthOne": truth1, "truthTwo": truth2, "lie": lie}
+    }
+  }
+}
+Data.prototype.checkParticipantStatus = function(pollId) {
+  const poll = this.polls[pollId];
+  if (typeof poll !== 'undefined') {
+    for (let i = 0; i < poll.participents.length; i++) {
+      const {truthOne,truthTwo, lie} = poll.participents[i].answers
+      if (!truthOne || !truthTwo || !lie) {
+        return false
+      }
+    }
+    return true
+  }
 }
 export { Data };
 

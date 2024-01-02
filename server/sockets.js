@@ -1,3 +1,4 @@
+
 function sockets(io, socket, data) {
   socket.emit('init', data.getUILabels());
   
@@ -75,7 +76,23 @@ function sockets(io, socket, data) {
   socket.on("sendQuestions", function(pollId,questionaire){
     data.addQuestion2(pollId ,questionaire);
   })
- 
+  socket.on("leaveLobby", function(pollId,username) {
+    let participants = data.getParticipents(pollId);
+    participants = participants.filter(participants => participants.name !== username);
+    data.updateParticipants(pollId, participants)
+    io.to(pollId).emit('participentsUpdate', participants);
+  })
+  socket.on("lockInAnswers", function(pollId, username, truth1, truth2, lie) {
+    data.lockInParticipantAnswers(pollId, username, truth1, truth2, lie);
+    if (data.checkParticipantStatus(pollId)) {
+      console.log("starting round")
+      setTimeout(()  => {
+        io.to(pollId).emit("startRound");}, 5000);}
+  });
+  socket.on("getRoundInfo", function(pollId) {
+    const gameInfo = data.getGameInfo(pollId);
+    io.to(pollId).emit("sendGameInfo", gameInfo)
+  })
 }
 
 export { sockets };

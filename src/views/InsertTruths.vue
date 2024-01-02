@@ -4,21 +4,23 @@
     <div class="timer">
     </div>
         <main>
+          <form @submit.prevent="lockInAnswers()">
             <div v-if="editWindow">
             <div class="insert">
             <label for="truth1"></label>
-                        <input type="text" id="truth1" v-model="truth1" name="t1" required="required" placeholder="truth1" ><br>
+                        <input type="text" id="truth1" v-model="truth1" name="t1" required="required" placeholder="Truth 1" ><br>
             <label for="truth2"></label>
-                        <input type="text" id="truth2" v-model="truth2" name="t2" required="required" placeholder="truth2" ><br>
+                        <input type="text" id="truth2" v-model="truth2" name="t2" required="required" placeholder="Truth 2" ><br>
             <label for="lie"></label>
-                        <input type="text" id="lie" v-model="lie" name="lie" required="required" placeholder="lie" ><br>
-            </div> 
-            <button v-on:click="prev" :disabled="b1Disabled">Prev</button>
-            <button v-on:click="next" :disabled="b2Disabled">Next</button>  
-            <button type="submit" v-on:click="submit">
+                        <input type="text" id="lie" v-model="lie" name="lie" required="required" placeholder="Lie" ><br>
+            </div>
+            <button>
             Lock in answers
-            </button>     
-          </div>
+            </button>
+            </div>
+          </form>
+          <button v-on:click="prev" :disabled="b1Disabled">Prev</button>
+          <button v-on:click="next" :disabled="b2Disabled">Next</button>
 
             <div v-if="!editWindow">
             <button v-on:click="t"> test till nästa </button>
@@ -68,6 +70,12 @@ export default {
       if(this.questionaire.length === this.numberOfRounds){
         socket.emit("sendQuestions", this.pollId, {questionaire: this.questionaire});
         this.editWindow = false;
+      }
+    },
+    lockInAnswers: function(){
+      if ( this.truth1 !== "" && this.truth2 !== "" && this.lie !== "") {
+        socket.emit("lockInAnswers", this.pollId, this.userName, this.truth1, this.truth2, this.lie)
+        this.$router.push("/WaitingForParticipantsComponent/" + this.pollId + "/" +this.userName);
       }
     },
 
