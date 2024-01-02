@@ -97,6 +97,10 @@ Data.prototype.addQuestion2 = function(pollId, questionaire){
   if (typeof poll !== 'undefined') {
     poll.questions.push(questionaire);
   }
+  console.log("hela " +poll.questions);
+  for(let i=0; i<2; i++){
+    console.log(poll.questions[i]) //tester bara
+  }
 }
 
 

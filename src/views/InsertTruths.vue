@@ -58,6 +58,12 @@ export default {
   },
   methods: {
     submit: function(){
+      if(this.checkFields()){ 
+      if(this.currentQuestion < this.numberOfRounds){
+      this.addQuestion();
+      this.currentQuestion ++;
+      }
+    }
       console.log(this.questionaire)
       if(this.questionaire.length === this.numberOfRounds){
         socket.emit("sendQuestions", this.pollId, {questionaire: this.questionaire});
