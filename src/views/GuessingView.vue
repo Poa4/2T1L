@@ -1,11 +1,12 @@
 <template>
   <body>
-  <div>
+  <div v-if="this.participants.length">
     <h1>Spot the lie!</h1>
-    <div v-if="participants[currentParticipantIndex]"></div>
-    {{ this.participants[currentParticipantIndex].avatar }}<br>
-    {{this.participants[currentParticipantIndex].name}}<br>
-    <div v-for="(answer, index) in participants[currentParticipantIndex].answers" :key="index">
+    <div class="participantAvatarDiv">
+      {{ this.participants[this.currentParticipantIndex].avatar }}<br>
+    </div>
+    {{this.participants[this.currentParticipantIndex].name}}<br>
+    <div v-for="(answer, index) in participants[this.currentParticipantIndex].answers" :key="index">
       <input type="radio" :id="'answer' + index" v-model="selectedLie" :value="index" />
       <label :for="'answer' + index">{{ answer }}</label>
     </div>
@@ -41,7 +42,7 @@ export default {
     socket.on("sendGameInfo", (gameInfo) => {
       this.gameInfo = gameInfo;
       this.participants = gameInfo.participents;
-      this.startTimer();
+
     })
   },
   methods: {
@@ -49,8 +50,10 @@ export default {
       this.timer = setTimeout(this.checkAnswer, 60000);
     },
     checkAnswer() {
-      if (this.selectedLie === this.gameInfo.participents[this.currentParticipantIndex].answer.lie){
+      if (this.selectedLie === this.gameInfo.participents[this.currentParticipantIndex].answers.lie){
+        console.log(this.points, this.gameInfo.participents[this.currentParticipantIndex].answers.lie)
         this.points++;
+        console.log(this.points)
       }
       this.displayNextParticipantQuestions();
       },
@@ -59,11 +62,13 @@ export default {
       this.checkAnswer();
     },
     displayNextParticipantQuestions() {
-      this.currentParticipantIndex++;
-      if (this.currentParticipantIndex >= this.gameInfo.participant.length){
+
+      if (!(this.currentParticipantIndex >= (this.gameInfo.participents.length-1))){
+        this.currentParticipantIndex++;
+      }
+      else {
         this.$router.push("/InsertTruths/" + this.pollId + "/" +this.userName);
       }
-      this.startTimer()
     }
 
   }
@@ -73,5 +78,10 @@ export default {
 <style>
 body {
   color:white
+}
+
+.participantAvatarDiv {
+  width: 100%;
+  height: auto;
 }
 </style>
