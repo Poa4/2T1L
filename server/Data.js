@@ -54,9 +54,10 @@ Data.prototype.createPoll = function(pollId, lang="en") {
     poll.lang = lang; 
     poll.questions = [];
     poll.answers = [];
-    poll.currentQuestion = 0;
+    poll.currentQuestion = -1;
     poll.participents = [];
     poll.gameOptions = {time: 30, rounds: 5, teams: false};
+    poll.numbOfPlayers = 0;
     this.polls[pollId] = poll;
     console.log("poll created", pollId, poll);
   }
@@ -75,6 +76,14 @@ Data.prototype.getGameInfo = function(pollId){
     return poll.participents;
   }
   return {}
+}
+
+Data.prototype.getTimeInfo = function(pollId){
+  const poll = this.polls[pollId];
+  if (typeof poll !== "undefined") {
+    return poll.gameOptions.time;
+  }
+  return -1
 }
 
 Data.prototype.editGameOptions = function(pollId, data){
@@ -109,7 +118,6 @@ Data.prototype.addQuestion2 = function(pollId, questionaire){
       poll.questions.push(question);
     });
   }
-  console.log(poll.questions);
 }
 
 
@@ -119,10 +127,7 @@ Data.prototype.submitUserName = function(pollId, name, avatar) {
   if (typeof poll !== 'undefined') {
     let participent = {
       name: name,
-      avatar: avatar,
-      answers: {"truthOne": "",
-        "truthTwo": "",
-        "lie": ""}
+      avatar: avatar
     }
     poll.participents.push(participent);
   }
@@ -141,16 +146,29 @@ Data.prototype.editQuestion = function(pollId, index, newQuestion) {
   }
 }
 
-Data.prototype.getQuestion = function(pollId, qId=null) {
+Data.prototype.getQuestion = function(pollId) {
   const poll = this.polls[pollId];
-  console.log("question requested for ", pollId, qId);
   if (typeof poll !== 'undefined') {
-    if (qId !== null) {
-      poll.currentQuestion = qId;
+    if(poll.currentQuestion === -1){
+      poll.questions.sort(() => (Math.random() > .5) ? 1 : -1);
+      poll.currentQuestion++;
+      return poll.questions[0]
     }
-    return poll.questions[poll.currentQuestion];
+    else{
+      poll.currentQuestion++;
+      return poll.question[poll.currentQuestion]
+    }
   }
-  return []
+  return null
+}
+
+
+Data.prototype.getParticentInfo = function(pollId, userName){
+  const poll = this.polls[pollId];
+  if (typeof poll !== 'undefined') {
+    const participant = poll.participents.find(p => p.name === userName);
+    return participant;
+  }
 }
 
 Data.prototype.submitAnswer = function(pollId, answer) {
@@ -194,6 +212,23 @@ Data.prototype.checkParticipantStatus = function(pollId) {
     }
     return false;
   }
+}
+
+Data.prototype.waitForAllPlayers = function(pollId){
+  const poll = this.polls[pollId];
+  if (typeof poll !== 'undefined') {
+    poll.numbOfPlayers++;
+    if(poll.numbOfPlayers === poll.participents.length){
+      return true;
+    }
+    return false;
+
+  }
+}
+Data.prototype.randomizeQuestion = function(question){
+  console.log("inskciad", question);
+  question.sort(() => (Math.random() > .5) ? 1 : -1);
+  return question;
 }
 export { Data };
 

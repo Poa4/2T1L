@@ -153,7 +153,7 @@ export default {
       showRoundsForm: false,
       showTimeForm: false,
       showTeamForm: false,
-      rounds: 5,
+      rounds: 2,
       time: 30,
       teams: false,
       teamText: "No Team",

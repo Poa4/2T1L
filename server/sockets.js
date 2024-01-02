@@ -27,7 +27,6 @@ function sockets(io, socket, data) {
 
   socket.on('joinPoll', function(pollId) {
     socket.join(pollId);
-    socket.emit('newQuestion', data.getQuestion(pollId))
     socket.emit('dataUpdate', data.getAnswers(pollId));
   });
 
@@ -89,9 +88,25 @@ function sockets(io, socket, data) {
   });
 
 
+  socket.on("getTime", function(pollId) {
+    const timeInfo = data.getTimeInfo(pollId);
+    io.to(pollId).emit("sendTimeInfo", timeInfo)
+  });
+
   socket.on("getRoundInfo", function(pollId) {
     const roundInfo = data.getRoundsInfo(pollId);
     io.to(pollId).emit("sendRoundInfo", roundInfo)
+  });
+
+  socket.on("JoinedGuessingPage", function(pollId){
+    if(data.waitForAllPlayers(pollId)){
+      let question = data.getQuestion(pollId);
+      let participent = data.getParticentInfo(pollId,question.username);
+      question = Object.values(question);
+      question = data.randomizeQuestion([question[0], question[1], question[2]]);
+      question.push(participent);
+      io.to(pollId).emit("startingRounds", question)
+    }
   })
 }
 

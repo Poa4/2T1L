@@ -1,16 +1,19 @@
 <template>
   <body>
-  <div v-if="this.participants.length">
+  <div v-if="this.question.length">
     <h1>Spot the lie!</h1>
     <div class="participantAvatarDiv">
-      {{ this.participants[this.currentParticipantIndex].avatar }}<br>
+      {{question[3].avatar}}<br>
     </div>
-    {{this.participants[this.currentParticipantIndex].name}}<br>
-    <div v-for="(answer, index) in participants[this.currentParticipantIndex].answers" :key="index">
+    {{this.question.name}}<br>
+    <div v-for="(answer, index) in question.slice(0,3)" :key="index">
       <input type="radio" :id="'answer' + index" v-model="selectedLie" :value="index" />
       <label :for="'answer' + index">{{ answer }}</label>
     </div>
     <button @click="selectLie">Submit</button>
+  </div>
+  <div>
+    {{ question }}
   </div>
   </body>
 
@@ -26,24 +29,26 @@ export default {
     return {
       pollId: "",
       userName: "",
-      gameInfo: null,
-      points: 0,
+      timeInfo: null,
       currentParticipantIndex: 0,
       selectedLie: "",
       participants: [],
-
+      question: [],
     }
   },
   created: function() {
     this.pollId = this.$route.params.id;
     this.userName = this.$route.params.uid;
     socket.emit("joinPoll", this.pollId);
-    socket.emit("getRoundInfo", this.pollId);
-    socket.on("sendGameInfo", (gameInfo) => {
-      this.gameInfo = gameInfo;
-      this.participants = gameInfo.participents;
+    socket.emit("getTime", this.pollId);
+    socket.emit("JoinedGuessingPage", this.pollId);
+    socket.on("sendTimeInfo", (timeInfo) => {
+      this.timeInfo = timeInfo;
+    });
+    socket.on("startingRounds", (question) => {
+      this.question = question;
+    });
 
-    })
   },
   methods: {
     startTimer() {
@@ -62,7 +67,6 @@ export default {
       this.checkAnswer();
     },
     displayNextParticipantQuestions() {
-
       if (!(this.currentParticipantIndex >= (this.gameInfo.participents.length-1))){
         this.currentParticipantIndex++;
       }
