@@ -163,6 +163,7 @@ Data.prototype.getQuestion = function(pollId) {
 }
 
 
+
 Data.prototype.getParticentInfo = function(pollId, userName){
   const poll = this.polls[pollId];
   if (typeof poll !== 'undefined') {
@@ -226,8 +227,12 @@ Data.prototype.waitForAllPlayers = function(pollId){
   }
 }
 Data.prototype.randomizeQuestion = function(question){
-  console.log("inskciad", question);
-  question.sort(() => (Math.random() > .5) ? 1 : -1);
+    let p = 0;
+    while(p < question.length-1){
+    let numb = Math.floor(Math.random() * (question.length - p) + p);
+    [question[p], question[numb]] = [question[numb], question[p]]
+    p++;
+    }
   return question;
 }
 export { Data };
