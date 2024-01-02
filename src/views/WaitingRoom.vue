@@ -44,7 +44,7 @@
 
       <section>
         <p id="waitingToStart">
-          <button v-on:click="submitUserName"> submit </button>
+          <button v-on:click="leaveLobby()"> Leave </button>
           <!-- Waiting for host to start the game -->
         </p>
       </section>
@@ -154,6 +154,11 @@ Poll link:
     methods: {
       submitUserName: function () {
         console.log(this.userName)
+      },
+      leaveLobby: function () {
+        this.participents = [];
+        socket.emit("leaveLobby", this.pollId, this.userName)
+        this.$router.push("/")
       }
     },
     components: {

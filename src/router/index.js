@@ -31,7 +31,7 @@ const router = createRouter({
     },
     {
       path: '/InsertTruths/:id/:uid',
-      name: 'insertTruths',
+      name: 'InsertTruths',
       component: () => import('../views/InsertTruths.vue')
     },
     {
@@ -48,6 +48,16 @@ const router = createRouter({
       path: '/spotTheLie/:id/:uid',
       name: 'spotTheLie',
       component: () => import("../views/SpotTheLie.vue")
+    },
+    {
+      path: '/GuessingView/:id/:uid',
+      name: 'GuessingView',
+      component: () => import('../views/GuessingView.vue')
+    },
+    {
+      path: '/WaitingForParticipantsComponent/:id/:uid',
+      name: 'WaitingForParticipantsComponent',
+      component: () => import('../views/WaitingForParticipantsComponent.vue')
     }
   ]
 })
