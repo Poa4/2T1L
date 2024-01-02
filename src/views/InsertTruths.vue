@@ -4,7 +4,6 @@
     <div class="timer">
     </div>
         <main>
-          <form @submit.prevent="lockInAnswers()">
             <div v-if="editWindow">
             <div class="insert">
             <label for="truth1"></label>
@@ -14,11 +13,10 @@
             <label for="lie"></label>
                         <input type="text" id="lie" v-model="lie" name="lie" required="required" placeholder="Lie" ><br>
             </div>
-            <button>
+            <button v-on:click="submit">
             Lock in answers
             </button>
             </div>
-          </form>
           <button v-on:click="prev" :disabled="b1Disabled">Prev</button>
           <button v-on:click="next" :disabled="b2Disabled">Next</button>
 
@@ -45,7 +43,7 @@ export default {
       truth2: "",
       lie: "",
       questionaire: [],
-      numberOfRounds: 3,
+      numberOfRounds: 0,
       currentQuestion: 0,
       b1Disabled: true,
       b2Disabled: false,
@@ -57,6 +55,8 @@ export default {
     this.pollId = this.$route.params.id;
     this.userName = this.$route.params.uid;
     socket.emit("joinPoll", this.pollId);
+    socket.emit("getRoundInfo", this.pollId);
+    socket.on("sendRoundInfo", (roundInfo) => this.numberOfRounds = roundInfo)
   },
   methods: {
     submit: function(){
@@ -68,15 +68,10 @@ export default {
     }
       console.log(this.questionaire)
       if(this.questionaire.length === this.numberOfRounds){
-        socket.emit("sendQuestions", this.pollId, {questionaire: this.questionaire});
+        socket.emit("sendQuestions", this.pollId, this.questionaire);
         this.editWindow = false;
       }
-    },
-    lockInAnswers: function(){
-      if ( this.truth1 !== "" && this.truth2 !== "" && this.lie !== "") {
-        socket.emit("lockInAnswers", this.pollId, this.userName, this.truth1, this.truth2, this.lie)
-        this.$router.push("/WaitingForParticipantsComponent/" + this.pollId + "/" +this.userName);
-      }
+      this.$router.push("/WaitingForParticipantsComponent/" + this.pollId + "/" +this.userName);
     },
 
     prev: function(){

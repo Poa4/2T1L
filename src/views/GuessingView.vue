@@ -67,7 +67,7 @@ export default {
         this.currentParticipantIndex++;
       }
       else {
-        this.$router.push("/InsertTruths/" + this.pollId + "/" +this.userName);
+        this.$router.push("/InsertTruths/" + this.pollId + "/" + this.userName);
       }
     }
 

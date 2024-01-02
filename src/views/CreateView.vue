@@ -174,9 +174,8 @@ export default {
     socket.on("dataUpdate", (data) =>
       this.data = data
     );
-    socket.on("pollCreated", (data) =>{
-      this.data = data;
-      this.participents = data.participents;
+    socket.on("pollCreated", (participents) =>{
+      this.participents = participents;
     });
     socket.on("participentsUpdate", (participents) => {
       this.participents = participents;

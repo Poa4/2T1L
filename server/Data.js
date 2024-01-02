@@ -51,22 +51,30 @@ Data.prototype.getUILabels = function (lang = "en") {
 Data.prototype.createPoll = function(pollId, lang="en") {
   if (typeof this.polls[pollId] === "undefined") {
     let poll = {};
-    poll.lang = lang;  
+    poll.lang = lang; 
     poll.questions = [];
     poll.answers = [];
     poll.currentQuestion = 0;
     poll.participents = [];
-    poll.gameOptions = {time: 30, rounds: 2, teams: false};
+    poll.gameOptions = {time: 30, rounds: 5, teams: false};
     this.polls[pollId] = poll;
     console.log("poll created", pollId, poll);
   }
 }
+Data.prototype.getRoundsInfo = function(pollId){
+  const poll = this.polls[pollId];
+  if (typeof poll !== "undefined") {
+    return poll.gameOptions.rounds;
+  }
+  return -1
+}
+
 Data.prototype.getGameInfo = function(pollId){
-  if (typeof this.polls[pollId] !== "undefined") {
-    return this.polls[pollId]
+  const poll = this.polls[pollId];
+  if (typeof poll !== "undefined") {
+    return poll.participents;
   }
   return {}
-
 }
 
 Data.prototype.editGameOptions = function(pollId, data){
@@ -97,12 +105,11 @@ Data.prototype.addQuestion2 = function(pollId, questionaire){
   const poll = this.polls[pollId];
   console.log("questionaire added", pollId, questionaire);
   if (typeof poll !== 'undefined') {
-    poll.questions.push(questionaire);
+    questionaire.forEach(question => {
+      poll.questions.push(question);
+    });
   }
-  console.log("hela " +poll.questions);
-  for(let i=0; i<2; i++){
-    console.log(poll.questions[i]) //tester bara
-  }
+  console.log(poll.questions);
 }
 
 
@@ -179,26 +186,13 @@ Data.prototype.updateParticipants = function(pollId, participants) {
   poll.participents = participants;
 }
 
-Data.prototype.lockInParticipantAnswers = function(pollId, username, truth1, truth2, lie) {
-  const poll = this.polls[pollId];
-  if (typeof poll !== 'undefined') {
-    let participantIndex = poll.participents.findIndex(participant => participant.name === username)
-    console.log(participantIndex)
-    if(participantIndex !== -1) {
-      poll.participents[participantIndex].answers = {"truthOne": truth1, "truthTwo": truth2, "lie": lie}
-    }
-  }
-}
 Data.prototype.checkParticipantStatus = function(pollId) {
   const poll = this.polls[pollId];
   if (typeof poll !== 'undefined') {
-    for (let i = 0; i < poll.participents.length; i++) {
-      const {truthOne,truthTwo, lie} = poll.participents[i].answers
-      if (!truthOne || !truthTwo || !lie) {
-        return false
-      }
+    if(poll.participents.length*poll.gameOptions.rounds === poll.questions.length){
+      return true;
     }
-    return true
+    return false;
   }
 }
 export { Data };
