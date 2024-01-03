@@ -124,7 +124,15 @@ function sockets(io, socket, data) {
         }
         }, 3000)
       }
-  } )
+  } );
+
+  socket.on("GetScore", function(pollId){
+    const participants = data.getParticipents(pollId);
+    io.to(pollId).emit("sendScore", participants);
+    data.removePoll(pollId);
+  })
+
+
 }
 
 export { sockets };

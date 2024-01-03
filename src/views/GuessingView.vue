@@ -83,9 +83,6 @@ export default {
         }
         }, 1000);
       },
-      checkAnswer() {
-      console.log("hej")
-      },
     selectLie() {
       socket.emit("sendSelectedLie",this.pollId, this.userName ,this.question[this.selectedLieIndex]);
     },

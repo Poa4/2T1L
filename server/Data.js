@@ -255,6 +255,13 @@ Data.prototype.randomizeQuestion = function(question){
     }
   return question;
 }
+
+Data.prototype.removePoll = function(pollId){
+  const poll = this.polls[pollId];
+  if (typeof poll !== 'undefined') {
+    delete this.polls[pollId];
+  }
+}
 export { Data };
 
 
