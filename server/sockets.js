@@ -27,7 +27,6 @@ function sockets(io, socket, data) {
 
   socket.on('joinPoll', function(pollId) {
     socket.join(pollId);
-    socket.emit('newQuestion', data.getQuestion(pollId))
     socket.emit('dataUpdate', data.getAnswers(pollId));
   });
 
@@ -75,24 +74,57 @@ function sockets(io, socket, data) {
 
   socket.on("sendQuestions", function(pollId,questionaire){
     data.addQuestion2(pollId ,questionaire);
+    if (data.checkParticipantStatus(pollId)) {
+      console.log("starting round")
+      setTimeout(()  => {
+        io.to(pollId).emit("startRound");}, 5000);}
   })
   socket.on("leaveLobby", function(pollId,username) {
     let participants = data.getParticipents(pollId);
     participants = participants.filter(participants => participants.name !== username);
     data.updateParticipants(pollId, participants)
     io.to(pollId).emit('participentsUpdate', participants);
-  })
-  socket.on("lockInAnswers", function(pollId, username, truth1, truth2, lie) {
-    data.lockInParticipantAnswers(pollId, username, truth1, truth2, lie);
-    if (data.checkParticipantStatus(pollId)) {
-      console.log("starting round")
-      setTimeout(()  => {
-        io.to(pollId).emit("startRound");}, 5000);}
   });
+
+
+  socket.on("getTime", function(pollId) {
+    const timeInfo = data.getTimeInfo(pollId);
+    io.to(pollId).emit("sendTimeInfo", timeInfo)
+  });
+
   socket.on("getRoundInfo", function(pollId) {
-    const gameInfo = data.getGameInfo(pollId);
-    io.to(pollId).emit("sendGameInfo", gameInfo)
-  })
+    const roundInfo = data.getRoundsInfo(pollId);
+    io.to(pollId).emit("sendRoundInfo", roundInfo)
+  });
+
+  socket.on("ReadyToGo", function(pollId){
+    data.clearAnswers(pollId);
+    if(data.waitForAllPlayers(pollId)){
+      let question = data.getQuestion(pollId);
+      let participent = data.getParticentInfo(pollId,question.username);
+      question = Object.values(question);
+      question = data.randomizeQuestion([question[0], question[1], question[2]]);
+      question.push(participent);
+      io.to(pollId).emit("startingRounds", question)
+    }
+  });
+
+  socket.on("sendSelectedLie", function(pollId,userName,lie){
+      data.addAnswer(pollId,userName,lie);
+      if(data.checkAnswerStatus(pollId)){
+        const clientAnswers = data.getAnswers(pollId);
+        const correctAnswer = data.getCorrectAnswer(pollId);
+        io.to(pollId).emit("showAnswer", correctAnswer, clientAnswers);
+        setTimeout(() => {
+        if(data.checkGameOver(pollId)){
+          io.to(pollId).emit("endGame");
+        }
+        else{
+          io.to(pollId).emit("updateRound");
+        }
+        }, 3000)
+      }
+  } )
 }
 
 export { sockets };

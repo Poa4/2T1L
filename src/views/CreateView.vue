@@ -153,7 +153,7 @@ export default {
       showRoundsForm: false,
       showTimeForm: false,
       showTeamForm: false,
-      rounds: 5,
+      rounds: 2,
       time: 30,
       teams: false,
       teamText: "No Team",
@@ -174,9 +174,8 @@ export default {
     socket.on("dataUpdate", (data) =>
       this.data = data
     );
-    socket.on("pollCreated", (data) =>{
-      this.data = data;
-      this.participents = data.participents;
+    socket.on("pollCreated", (participents) =>{
+      this.participents = participents;
     });
     socket.on("participentsUpdate", (participents) => {
       this.participents = participents;

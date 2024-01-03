@@ -1,17 +1,23 @@
 <template>
   <body>
-  <div v-if="this.participants.length">
+  <div v-if="this.question.length">
     <h1>Spot the lie!</h1>
     <div class="participantAvatarDiv">
-      {{ this.participants[this.currentParticipantIndex].avatar }}<br>
+      {{question[3].avatar}}<br>
     </div>
-    {{this.participants[this.currentParticipantIndex].name}}<br>
-    <div v-for="(answer, index) in participants[this.currentParticipantIndex].answers" :key="index">
-      <input type="radio" :id="'answer' + index" v-model="selectedLie" :value="index" />
+    {{this.question.name}}<br>
+    <div v-for="(answer, index) in question.slice(0,3)" :key="index">
+      <input type="radio" :id="'answer' + index" v-model="selectedLieIndex" :value="index" />
       <label :for="'answer' + index">{{ answer }}</label>
     </div>
     <button @click="selectLie">Submit</button>
   </div>
+  <section v-if="questionDone">
+    <div v-for="particpent in answerArray1"> Första{{ particpent  }}</div>
+    <div v-for="particpent in answerArray2"> Andra{{ particpent  }}</div>
+    <div v-for="particpent in answerArray3"> Tredje{{ particpent  }}</div>
+    <div v-for="particpent in shameArray"> Fjärde{{ particpent  }}</div>
+  </section>
   </body>
 
 </template>
@@ -26,11 +32,18 @@ export default {
     return {
       pollId: "",
       userName: "",
-      gameInfo: null,
-      points: 0,
+      timeInfo: null,
       currentParticipantIndex: 0,
-      selectedLie: "",
+      selectedLieIndex: "",
       participants: [],
+      question: [],
+      timer: 0,
+      correctAnswer: "",
+      questionDone: false,
+      answerArray1: [],
+      answerArray2: [],
+      answerArray3: [],
+      shameArray: []
 
     }
   },
@@ -38,41 +51,69 @@ export default {
     this.pollId = this.$route.params.id;
     this.userName = this.$route.params.uid;
     socket.emit("joinPoll", this.pollId);
-    socket.emit("getRoundInfo", this.pollId);
-    socket.on("sendGameInfo", (gameInfo) => {
-      this.gameInfo = gameInfo;
-      this.participants = gameInfo.participents;
+    socket.emit("getTime", this.pollId);
+    socket.emit("ReadyToGo", this.pollId);
+    socket.on("sendTimeInfo", (timeInfo) => {
+      this.timeInfo = timeInfo;
+      this.timer = this.timeInfo;
+    });
+    socket.on("startingRounds", (question) => {
+      this.clearArrays();
+      this.question = question;
+    });
+    socket.on("updateRound", () => {
+    socket.emit("ReadyToGo", this.pollId)});
+
+    socket.on("endGame", () => this.$router.push("/ScoreBoard/" + this.pollId));
+    socket.on("showAnswer", (correctAnswer, allAnswers) => {
+      this.correctAnswer = correctAnswer;
+      this.placeAnswers(allAnswers);
+      this.questionDone = true;
+      
 
     })
   },
   methods: {
     startTimer() {
-      this.timer = setTimeout(this.checkAnswer, 60000);
-    },
-    checkAnswer() {
-      if (this.selectedLie === this.gameInfo.participents[this.currentParticipantIndex].answers.lie){
-        console.log(this.points, this.gameInfo.participents[this.currentParticipantIndex].answers.lie)
-        this.points++;
-        console.log(this.points)
-      }
-      this.displayNextParticipantQuestions();
+        var t = setInterval( () => {
+        this.timer--;
+        if(this.timer <= 0){
+          this.timer = this.timeInfo;
+          clearInterval(t)
+        }
+        }, 1000);
+      },
+      checkAnswer() {
+      console.log("hej")
       },
     selectLie() {
-      clearTimeout(this.timer);
-      this.checkAnswer();
+      socket.emit("sendSelectedLie",this.pollId, this.userName ,this.question[this.selectedLieIndex]);
     },
-    displayNextParticipantQuestions() {
-
-      if (!(this.currentParticipantIndex >= (this.gameInfo.participents.length-1))){
-        this.currentParticipantIndex++;
-      }
-      else {
-        this.$router.push("/InsertTruths/" + this.pollId + "/" +this.userName);
-      }
+    clearArrays(){
+      this.answerArray1 = [];
+      this.answerArray2 = [];
+      this.answerArray3 = [];
+      this.shameArray = [];
+      this.questionDone = false;
+    },
+    placeAnswers(allAnswers){
+      allAnswers.forEach(a => {
+        if(a.answer === this.question[0]){
+          this.answerArray1.push(a.userName);
+        }
+        else if(a.answer === this.question[1]){
+          this.answerArray2.push(a.userName)
+        }
+        else if(a.answer === this.question[2]){
+          this.answerArray3.push(a.userName);
+        }
+        else{
+          this.shameArray.push(a.userName);
+        }
+      });
     }
-
+    },
   }
-}
 </script>
 
 <style>

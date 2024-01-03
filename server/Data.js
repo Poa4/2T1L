@@ -51,22 +51,39 @@ Data.prototype.getUILabels = function (lang = "en") {
 Data.prototype.createPoll = function(pollId, lang="en") {
   if (typeof this.polls[pollId] === "undefined") {
     let poll = {};
-    poll.lang = lang;  
+    poll.lang = lang; 
     poll.questions = [];
     poll.answers = [];
-    poll.currentQuestion = 0;
+    poll.currentQuestion = -1;
     poll.participents = [];
-    poll.gameOptions = {time: 30, rounds: 2, teams: false};
+    poll.gameOptions = {time: 30, rounds: 5, teams: false};
+    poll.numbOfPlayers = 0;
     this.polls[pollId] = poll;
     console.log("poll created", pollId, poll);
   }
 }
+Data.prototype.getRoundsInfo = function(pollId){
+  const poll = this.polls[pollId];
+  if (typeof poll !== "undefined") {
+    return poll.gameOptions.rounds;
+  }
+  return -1
+}
+
 Data.prototype.getGameInfo = function(pollId){
-  if (typeof this.polls[pollId] !== "undefined") {
-    return this.polls[pollId]
+  const poll = this.polls[pollId];
+  if (typeof poll !== "undefined") {
+    return poll.participents;
   }
   return {}
+}
 
+Data.prototype.getTimeInfo = function(pollId){
+  const poll = this.polls[pollId];
+  if (typeof poll !== "undefined") {
+    return poll.gameOptions.time;
+  }
+  return -1
 }
 
 Data.prototype.editGameOptions = function(pollId, data){
@@ -84,24 +101,13 @@ Data.prototype.getGameOptions = function(pollId){
   return {}
 }
 
-Data.prototype.addQuestion = function(pollId, q) {
-  const poll = this.polls[pollId];
-  console.log("question added to", pollId, q);
-  if (typeof poll !== 'undefined') {
-    poll.questions.push(q);
-  }
-}
-
-
 Data.prototype.addQuestion2 = function(pollId, questionaire){
   const poll = this.polls[pollId];
   console.log("questionaire added", pollId, questionaire);
   if (typeof poll !== 'undefined') {
-    poll.questions.push(questionaire);
-  }
-  console.log("hela " +poll.questions);
-  for(let i=0; i<2; i++){
-    console.log(poll.questions[i]) //tester bara
+    questionaire.forEach(question => {
+      poll.questions.push(question);
+    });
   }
 }
 
@@ -113,9 +119,7 @@ Data.prototype.submitUserName = function(pollId, name, avatar) {
     let participent = {
       name: name,
       avatar: avatar,
-      answers: {"truthOne": "",
-        "truthTwo": "",
-        "lie": ""}
+      score: 0
     }
     poll.participents.push(participent);
   }
@@ -134,72 +138,122 @@ Data.prototype.editQuestion = function(pollId, index, newQuestion) {
   }
 }
 
-Data.prototype.getQuestion = function(pollId, qId=null) {
+Data.prototype.getQuestion = function(pollId) {
   const poll = this.polls[pollId];
-  console.log("question requested for ", pollId, qId);
   if (typeof poll !== 'undefined') {
-    if (qId !== null) {
-      poll.currentQuestion = qId;
+    if(poll.currentQuestion === -1){
+      poll.questions = this.randomizeQuestion(poll.questions);
+      poll.currentQuestion++;
+      return poll.questions[poll.currentQuestion]
     }
-    return poll.questions[poll.currentQuestion];
+    else{
+      poll.currentQuestion++;
+      return poll.questions[poll.currentQuestion]
+    }
   }
-  return []
+  return null
 }
 
-Data.prototype.submitAnswer = function(pollId, answer) {
+
+Data.prototype.checkGameOver = function(pollId){
   const poll = this.polls[pollId];
-  console.log("answer submitted for ", pollId, answer);
   if (typeof poll !== 'undefined') {
-    let answers = poll.answers[poll.currentQuestion];
-    if (typeof answers !== 'object') {
-      answers = {};
-      answers[answer] = 1;
-      poll.answers.push(answers);
+    if(poll.currentQuestion+1 === poll.questions.length){
+      return true
     }
-    else if (typeof answers[answer] === 'undefined')
-      answers[answer] = 1;
-    else
-      answers[answer] += 1
-    console.log("answers looks like ", answers, typeof answers);
+  }
+  return false
+}
+
+
+Data.prototype.getParticentInfo = function(pollId, userName){
+  const poll = this.polls[pollId];
+  if (typeof poll !== 'undefined') {
+    const participant = poll.participents.find(p => p.name === userName);
+    return participant;
   }
 }
+
+Data.prototype.addAnswer = function(pollId,userName,lie){
+  const poll = this.polls[pollId];
+  if (typeof poll !== 'undefined') {
+      let question = poll.questions[poll.currentQuestion];
+      const participant = poll.participents.find(p => p.name === userName);
+      if(question.lie === lie){
+        participant.score++;
+      }
+      poll.answers.push({userName: userName, answer: lie})
+  }
+}
+
+Data.prototype.checkAnswerStatus = function(pollId){
+  const poll = this.polls[pollId];
+  if (typeof poll !== 'undefined') {
+    if(poll.answers.length === poll.participents.length){
+      return true;
+    }
+  }
+  return false;
+}
+
+Data.prototype.clearAnswers = function(pollId){
+  const poll = this.polls[pollId];
+  if (typeof poll !== 'undefined') {
+    poll.answers = [];
+  }
+}
+
 
 Data.prototype.getAnswers = function(pollId) {
   const poll = this.polls[pollId];
   if (typeof poll !== 'undefined') {
-    const answers = poll.answers[poll.currentQuestion];
-    if (typeof poll.questions[poll.currentQuestion] !== 'undefined') {
-      return {q: poll.questions[poll.currentQuestion].q, a: answers};
-    }
+    return poll.answers;
   }
-  return {}
+  return []
+}
+
+Data.prototype.getCorrectAnswer = function(pollId) {
+  const poll = this.polls[pollId];
+  if (typeof poll !== 'undefined') {
+    return poll.questions[poll.currentQuestion].lie
+  }
+  return null
 }
 Data.prototype.updateParticipants = function(pollId, participants) {
   const poll = this.polls[pollId];
   poll.participents = participants;
 }
 
-Data.prototype.lockInParticipantAnswers = function(pollId, username, truth1, truth2, lie) {
-  const poll = this.polls[pollId];
-  if (typeof poll !== 'undefined') {
-    let participantIndex = poll.participents.findIndex(participant => participant.name === username)
-    console.log(participantIndex)
-    if(participantIndex !== -1) {
-      poll.participents[participantIndex].answers = {"truthOne": truth1, "truthTwo": truth2, "lie": lie}
-    }
-  }
-}
 Data.prototype.checkParticipantStatus = function(pollId) {
   const poll = this.polls[pollId];
   if (typeof poll !== 'undefined') {
-    for (let i = 0; i < poll.participents.length; i++) {
-      const {truthOne,truthTwo, lie} = poll.participents[i].answers
-      if (!truthOne || !truthTwo || !lie) {
-        return false
-      }
+    if(poll.participents.length*poll.gameOptions.rounds === poll.questions.length){
+      return true;
     }
-    return true
+    return false;
   }
+}
+
+Data.prototype.waitForAllPlayers = function(pollId){
+  const poll = this.polls[pollId];
+  if (typeof poll !== 'undefined') {
+    poll.numbOfPlayers++;
+    if(poll.numbOfPlayers === poll.participents.length){
+      poll.numbOfPlayers = 0;
+      return true;
+    }
+    return false;
+
+  }
+}
+Data.prototype.randomizeQuestion = function(question){
+    let p = 0;
+    while(p < question.length-1){
+    let numb = Math.floor(Math.random() * (question.length - p) + p);
+    [question[p], question[numb]] = [question[numb], question[p]]
+    p++;
+    }
+  return question;
 }
 export { Data };
 

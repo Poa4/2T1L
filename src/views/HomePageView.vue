@@ -65,9 +65,9 @@
   
   
   </div>
-  
-  
+
   </body>
+
   </template>
   
   
@@ -89,7 +89,7 @@
   chosenAvatar: "",
   gameSettings: {"rounds": 2,
   "time": 60,
-  "teams": 1,}
+  "teams": 1,},
   }
   },
   created: function() {
