@@ -3,7 +3,7 @@
         <h1>HighScore</h1>
     </header>
 
-<main class="headline">
+<main class="headline list">
 <p>{{addToHighScore({"participant": "Vanja Natvig", "score":0})}}</p> <!-- Exempel på input -->
     <p v-for="(item, index) in sortedHighScore(highScoreList)">
      {{ index + 1}}:a {{ item.participant }} - {{ item.score }} poäng
@@ -50,7 +50,13 @@ body, html {
 .headline {
     color: white;
     text-align: center;
+    font-size: 40px;
+}
 
+.list {
+    color: white;
+    text-align: center;
+    font-size: 30px;
 }
 
 </style>
