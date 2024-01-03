@@ -98,7 +98,7 @@ function sockets(io, socket, data) {
   });
 
   socket.on("ReadyToGo", function(pollId){
-    console.log("nu är vi redo igen")
+    data.clearAnswers(pollId);
     if(data.waitForAllPlayers(pollId)){
       let question = data.getQuestion(pollId);
       let participent = data.getParticentInfo(pollId,question.username);
@@ -110,8 +110,6 @@ function sockets(io, socket, data) {
   });
 
   socket.on("sendSelectedLie", function(pollId,userName,lie){
-      console.log("nu är vi skickad");
-      console.log("shickat",userName,lie)
       data.addAnswer(pollId,userName,lie);
       if(data.checkAnswerStatus(pollId)){
         const clientAnswers = data.getAnswers(pollId);
@@ -122,7 +120,6 @@ function sockets(io, socket, data) {
           io.to(pollId).emit("endGame");
         }
         else{
-          console.log("server update Round")
           io.to(pollId).emit("updateRound");
         }
         }, 3000)

@@ -190,7 +190,6 @@ Data.prototype.checkAnswerStatus = function(pollId){
   const poll = this.polls[pollId];
   if (typeof poll !== 'undefined') {
     if(poll.answers.length === poll.participents.length){
-
       return true;
     }
   }
