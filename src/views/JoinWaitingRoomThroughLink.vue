@@ -1,15 +1,20 @@
 <template>
+  <div class="modal">
         <div class="modalContent">
           <form @submit.prevent="joinGame()">
-            <label for="playerName">Player Name:</label><br>
-            <input type="text" id="playerName" v-model="playerName" required="required"><br><br>
-            <label for="gameCode">Game Code:</label><br>
-            <input type="text" id="gameCode" v-model="joinGameCode" required="required"><br><br>
+            <label for="playerName">Choose your nickname</label><br>
+            <input type="text" id="playerName" placeholder="Name" v-model="playerName" required="required"><br><br>
+            <label for="gameCode">Enter the room code:</label><br>
+            <input type="text" id="gameCode"  v-model="joinGameCode" required="required"><br><br>
             <label for="avatar">Pick a avatar:</label><br>
             <div class="avatarDiv">
               <span class="avatars" v-for="(emoji,index) in avatars"
                     :key="index">
-                <input type="radio" name="avatar" @click="chooseAvatar(emoji)">{{emoji}}</span>
+                <input type="radio" name="avatar" @click="chooseAvatar(emoji)">{{emoji}}
+
+
+              </span>
+
             </div>
 
             <button>Join Game</button>
@@ -18,6 +23,7 @@
                           generateRandomAvatar" class="generateRandomAvatarsButton">CLICK ME FOR NEW EMOJIS!!</button><br>
           <button @click="showJoinGameModal = false">X</button>
         </div>
+      </div>
 
 
 
@@ -40,6 +46,8 @@ export default {
   },
   created: function() {
     this.debounce =  this.debounceGenerateRandomAvatarButton(this.generateRandomAvatar, 1000)
+    this.joinGameCode = window.location.href.split("lobby/").pop()
+
   },
   methods: {
     joinGame: function () {
@@ -79,26 +87,28 @@ export default {
   body {
   }
   .modal {
-    display: block;
-    position: absolute;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.9);
+  display: block;
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(39, 3, 63);
   }
   .modalContent {
-    background-color: white;
-    margin: 15% auto;
-    width: 50%;
-  }
+  background-color: rgb(39, 3, 63);
+  margin: 15% auto;
+  width: 50%;
+  color:white;
+}
   .avatarDiv {
-    display: grid;
-    grid-template-columns: 50px 50px 50px 50px;
-    justify-content: center;
-    align-items: center;
-
+  display: grid;
+  grid-template-columns: 50px 50px 50px 50px;
+  justify-content: center;
+  align-items: center;
+  
+  
   }
   .generateRandomAvatarsButton {
     grid-column: 1/5;
