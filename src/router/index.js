@@ -58,6 +58,11 @@ const router = createRouter({
       path: '/WaitingForParticipantsComponent/:id/:uid',
       name: 'WaitingForParticipantsComponent',
       component: () => import('../views/WaitingForParticipantsComponent.vue')
+    },
+    {
+      path: '/ScoreBoard/:id',
+      name: 'ScoreBoard',
+      component: () => import('../views/HighScore.vue')
     }
   ]
 })

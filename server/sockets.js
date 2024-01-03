@@ -78,7 +78,6 @@ function sockets(io, socket, data) {
       console.log("starting round")
       setTimeout(()  => {
         io.to(pollId).emit("startRound");}, 5000);}
-
   })
   socket.on("leaveLobby", function(pollId,username) {
     let participants = data.getParticipents(pollId);
@@ -98,7 +97,8 @@ function sockets(io, socket, data) {
     io.to(pollId).emit("sendRoundInfo", roundInfo)
   });
 
-  socket.on("JoinedGuessingPage", function(pollId){
+  socket.on("ReadyToGo", function(pollId){
+    console.log("nu är vi redo igen")
     if(data.waitForAllPlayers(pollId)){
       let question = data.getQuestion(pollId);
       let participent = data.getParticentInfo(pollId,question.username);
@@ -107,7 +107,27 @@ function sockets(io, socket, data) {
       question.push(participent);
       io.to(pollId).emit("startingRounds", question)
     }
-  })
+  });
+
+  socket.on("sendSelectedLie", function(pollId,userName,lie){
+      console.log("nu är vi skickad");
+      console.log("shickat",userName,lie)
+      data.addAnswer(pollId,userName,lie);
+      if(data.checkAnswerStatus(pollId)){
+        const clientAnswers = data.getAnswers(pollId);
+        const correctAnswer = data.getCorrectAnswer(pollId);
+        io.to(pollId).emit("showAnswer", correctAnswer, clientAnswers);
+        setTimeout(() => {
+        if(data.checkGameOver(pollId)){
+          io.to(pollId).emit("endGame");
+        }
+        else{
+          console.log("server update Round")
+          io.to(pollId).emit("updateRound");
+        }
+        }, 3000)
+      }
+  } )
 }
 
 export { sockets };
