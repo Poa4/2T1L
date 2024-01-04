@@ -1,23 +1,34 @@
 <template>
   <body>
-  <div v-if="this.question.length">
-    <h1>{{uiLabels.spotTheLie}}</h1>
-    <div class="participantAvatarDiv">
-      {{question[3].avatar}}<br>
+  <h1>{{uiLabels.spotTheLie}}</h1>
+  <div class="participantInfoDiv">
+    <div class="participantInfoDivProperties">
+      {{this.roundInfo.questions[3].avatar}}
+      {{this.roundInfo.questions[3].name}}
     </div>
-    {{this.question.name}}<br>
-    <div v-for="(answer, index) in question.slice(0,3)" :key="index">
-      <input type="radio" :id="'answer' + index" v-model="selectedLieIndex" :value="index" />
-      <label :for="'answer' + index">{{ answer }}</label>
+    <div v-if="submittedAnswer">
+      <div v-for="(answer, index) in roundInfo.questions.slice(0,3)" :key="index">
+        {{answer}} {{roundInfo.participantAnswer[index].join(", ")}}
+      </div>
     </div>
-    <button @click="selectLie">{{uiLabels.submitButton}}</button>
+    <div v-else>
+      <div v-if="this.roundInfo.questions.length">
+      </div>
+      <div v-if="!(this.roundInfo.questions[3].name === this.userName)">
+        <div v-for="(answer, index) in roundInfo.questions.slice(0,3)" :key="index">
+          <input type="radio" :id="'answer' + index" v-model="selectedLieIndex" :value="index" />
+          <label :for="'answer' + index">{{ answer }}</label>
+        </div>
+        <button @click="selectLie(); this.submittedAnswer = true">{{uiLabels.submitButton}}</button>
+      </div>
+      <div v-else>
+        <div v-for="(answer, index) in roundInfo.questions.slice(0,3)" :key="index">
+          {{answer}} {{roundInfo.participantAnswer[index].join(", ")}}
+        </div>
+      </div>
+    </div>
   </div>
-  <section v-if="questionDone">
-    <div v-for="particpent in answerArray1"> Första{{ particpent  }}</div>
-    <div v-for="particpent in answerArray2"> Andra{{ particpent  }}</div>
-    <div v-for="particpent in answerArray3"> Tredje{{ particpent  }}</div>
-    <div v-for="particpent in shameArray"> Fjärde{{ particpent  }}</div>
-  </section>
+
   </body>
 
 </template>
@@ -40,13 +51,10 @@ export default {
       timer: 0,
       correctAnswer: "",
       questionDone: false,
-      answerArray1: [],
-      answerArray2: [],
-      answerArray3: [],
-      shameArray: [],
+      submittedAnswer: false,
+      roundInfo: {questions: [], participantAnswer: [[],[],[],[]] },
       uiLabels: {},
-          lang: localStorage.getItem("lang") || "en",
-
+      lang: localStorage.getItem("lang") || "en",
     }
   },
   created: function() {
@@ -57,64 +65,60 @@ export default {
     socket.emit("ReadyToGo", this.pollId);
     socket.on("sendTimeInfo", (timeInfo) => {
       this.timeInfo = timeInfo;
-      this.timer = this.timeInfo;
     });
     socket.on("startingRounds", (question) => {
       this.clearArrays();
-      this.question = question;
+      this.roundInfo.questions = question;
     });
     socket.on("updateRound", () => {
-    socket.emit("ReadyToGo", this.pollId)});
+      socket.emit("ReadyToGo", this.pollId)});
 
-    socket.on("endGame", () => this.$router.push("/ScoreBoard/" + this.pollId));
+    socket.on("endGame", () =>
+        this.$router.push("/ScoreBoard/" + this.pollId));
     socket.on("showAnswer", (correctAnswer, allAnswers) => {
       this.correctAnswer = correctAnswer;
       this.placeAnswers(allAnswers);
       this.questionDone = true;
-      
-
     })
-        socket.emit("pageLoaded", this.lang);
-        socket.on("init", (labels) => {this.uiLabels = labels})
+    socket.emit("pageLoaded", this.lang);
+    socket.on("init", (labels) => {this.uiLabels = labels})
   },
   methods: {
     startTimer() {
-        var t = setInterval( () => {
+      let t = setInterval( () => {
         this.timer--;
         if(this.timer <= 0){
           this.timer = this.timeInfo;
           clearInterval(t)
         }
-        }, 1000);
-      },
+      }, 1000);
+    },
     selectLie() {
       socket.emit("sendSelectedLie",this.pollId, this.userName ,this.question[this.selectedLieIndex]);
     },
     clearArrays(){
-      this.answerArray1 = [];
-      this.answerArray2 = [];
-      this.answerArray3 = [];
-      this.shameArray = [];
-      this.questionDone = false;
+      this.roundInfo.participantAnswer = [[],[],[],[]];
+      this.submittedAnswer = false;
     },
     placeAnswers(allAnswers){
+      console.log(allAnswers)
       allAnswers.forEach(a => {
         if(a.answer === this.question[0]){
-          this.answerArray1.push(a.userName);
+          this.roundInfo.participantAnswer[0].push(a.userName)
         }
         else if(a.answer === this.question[1]){
-          this.answerArray2.push(a.userName)
+          this.roundInfo.participantAnswer[1].push(a.userName)
         }
         else if(a.answer === this.question[2]){
-          this.answerArray3.push(a.userName);
+          this.roundInfo.participantAnswer[2].push(a.userName)
         }
         else{
-          this.shameArray.push(a.userName);
+          this.roundInfo.participantAnswer[3].push(a.userName)
         }
       });
     }
-    },
-  }
+  },
+}
 </script>
 
 <style>
@@ -122,8 +126,18 @@ body {
   color:white
 }
 
+.participantInfoDiv {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 100%;
+}
+.participantInfoDivProperties {
+  font-size: 2em;
+}
+
+.participantName {
+}
+
 .participantAvatarDiv {
-  width: 100%;
-  height: auto;
 }
 </style>

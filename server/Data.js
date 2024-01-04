@@ -5,6 +5,79 @@ import {readFileSync} from "fs";
 // Store data in an object to keep the global namespace clean
 function Data() {
   this.polls = {};
+  this.polls[58558430] = {
+    lang: 'en',
+    questions: [
+      {
+        truth1: 'sanning1',
+        truth2: 'sanning11',
+        lie: 'lögn1',
+        username: 'danne1'
+      },
+      {
+        truth1: 'sanning2',
+        truth2: 'sanning22',
+        lie: 'lögn2',
+        username: 'danne1'
+      },
+      {
+        truth1: 'sanning3',
+        truth2: 'sanning33',
+        lie: 'lögn3',
+        username: 'danne1'
+      },
+      {
+        truth1: 'sanning4',
+        truth2: 'sanning44',
+        lie: 'lögn4',
+        username: 'danne1'
+      },
+      {
+        truth1: 'sanning5',
+        truth2: 'sanning55',
+        lie: 'lögn5',
+        username: 'danne1'
+      },
+      {
+        truth1: 'truth1',
+        truth2: 'truth11',
+        lie: 'lie1',
+        username: 'danne2'
+      },
+      {
+        truth1: 'truth2',
+        truth2: 'truth22',
+        lie: 'lie2',
+        username: 'danne2'
+      },
+      {
+        truth1: 'truth3',
+        truth2: 'truth33',
+        lie: 'lie3',
+        username: 'danne2'
+      },
+      {
+        truth1: 'truth4',
+        truth2: 'truth44',
+        lie: 'lie4',
+        username: 'danne2'
+      },
+      {
+        truth1: 'truth5',
+        truth2: 'truth55',
+        lie: 'lie5',
+        username: 'danne2'
+      }
+    ],
+    answers: [],
+    currentQuestion: -1,
+    participents: [
+      { name: 'danne1', avatar: '🍫', score: 0 },
+      { name: 'danne2', avatar: '😚', score: 0 }
+    ],
+    gameOptions: { time: 30, rounds: 5, teams: false },
+    numbOfPlayers: 0
+  };
   this.polls["test"] = {
     lang: "en",
     questions: [{q: "How old are you?",
@@ -189,7 +262,7 @@ Data.prototype.addAnswer = function(pollId,userName,lie){
 Data.prototype.checkAnswerStatus = function(pollId){
   const poll = this.polls[pollId];
   if (typeof poll !== 'undefined') {
-    if(poll.answers.length === poll.participents.length){
+    if(poll.answers.length === (poll.participents.length-1)){
       return true;
     }
   }
