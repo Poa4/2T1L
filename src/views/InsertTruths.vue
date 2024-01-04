@@ -4,7 +4,7 @@
     <div class="timer">
     </div>
         <main>
-            <div v-if="editWindow">
+            <div>
             <div class="insert">
             <label for="truth1"></label>
                         <input type="text" id="truth1" v-model="truth1" name="t1" required="required" :placeholder="uiLabels.truth1" ><br>
@@ -20,11 +20,6 @@
           <button v-on:click="submit" :disabled="!b2Disabled">
             {{uiLabels.lockInAnswers}}
             </button>
-
-            <div v-if="!editWindow">
-            <button v-on:click="t"> test till nästa </button>
-            </div>
-
 
         </main>
         
@@ -48,9 +43,8 @@ export default {
       currentQuestion: 0,
       b1Disabled: true,
       b2Disabled: false,
-      editWindow: true,
-         uiLabels: {},
-              lang: localStorage.getItem("lang") || "en",
+      uiLabels: {},
+          lang: localStorage.getItem("lang") || "en",
   }
   },
   created: function() {
@@ -58,24 +52,20 @@ export default {
     this.userName = this.$route.params.uid;
     socket.emit("joinPoll", this.pollId);
     socket.emit("getRoundInfo", this.pollId);
-    socket.on("sendRoundInfo", (roundInfo) => this.numberOfRounds = roundInfo);
+    socket.on("sendRoundInfo", (roundInfo) => {
+      this.numberOfRounds = roundInfo;
+    });
     socket.emit("pageLoaded", this.lang);
     socket.on("init", (labels) => {this.uiLabels = labels})
      },
   methods: {
     submit: function(){
-      if(this.checkFields()){ 
-      if(this.currentQuestion < this.numberOfRounds){
+      if(this.checkFields()){
       this.addQuestion();
-      this.currentQuestion ++;
-      }
-    }
+      socket.emit("sendQuestions", this.pollId, this.questionaire);
       console.log(this.questionaire)
-      if(this.questionaire.length === this.numberOfRounds){
-        socket.emit("sendQuestions", this.pollId, this.questionaire);
-        this.editWindow = false;
-      }
       this.$router.push("/WaitingForParticipantsComponent/" + this.pollId + "/" +this.userName);
+    }
     },
 
     prev: function(){
@@ -85,20 +75,27 @@ export default {
       }
       //gets previous written question
       this.currentQuestion --;
-      this.changeButtons();
+
+    //Changes button, depended on what question were at
+    this.changeButtons();
       this.getPrevAnswer();
       console.log(this.currentQuestion)
       }
     },
 
     next: function(){
-    if(this.checkFields()){ //Checks so we have written in all fields before going to next
+    //Checks so we have written in all fields before going to next
+    if(this.checkFields()){
+
       //adds the question to list
       if(this.currentQuestion < this.numberOfRounds){
       this.addQuestion();
       this.currentQuestion ++;
-      this.changeButtons();
-      //sets all to empty again if new
+
+    //Changes button, depended on what question were at
+    this.changeButtons();
+
+      //sets all to empty again if new, else gets prev written question
       if(typeof this.questionaire[this.currentQuestion] === "undefined"){
       this.truth1 = "";
       this.truth2 = "";
@@ -152,23 +149,23 @@ export default {
       this.truth2 = question.truth2;
       this.lie = question.lie;
   },
+
   changeButtons: function(){
-    if(this.currentQuestion+1 === this.numberOfRounds){
+    console.log("current:", this.currentQuestion);
+    console.log("totQ:", this.numberOfRounds);
+    if(this.currentQuestion+1 === this.numberOfRounds){ //+2 adjusts so we cant go to next page if this is the last to write in question
     this.b2Disabled = true;
     }
-    else if(this.currentQuestion === 0){
+    else{
+      this.b2Disabled = false;
+    }
+    if(this.currentQuestion === 0){
       this.b1Disabled = true;
     }
     else{
       this.b1Disabled = false;
-      this.b2Disabled = false;
     }
-    
-
   },
-  t: function(){
-    this.$router.push("/spotTheLie/" + this.pollId  + "/" + this.userName); // får man ändra så den körs när alla är klara, eller
-  }
   },
 
 

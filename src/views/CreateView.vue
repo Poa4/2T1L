@@ -25,13 +25,13 @@
               <button v-if="!showRoundsForm" v-on:click="showRoundsForm = !showRoundsForm">{{rounds}} {{uiLabels.rounds}}</button>
               <form id="gameSelectionsOptionForm" v-if="showRoundsForm">
                 <label class="customRadio"> <span class="labelText">2</span>
-                <input type="radio" id="rounds_amount1" v-model="rounds" value="2" v-on:change="roundsButtonChange($event)">
+                <input type="radio" id="rounds_amount1" v-model="rounds" value=2 v-on:change="roundsButtonChange($event)">
                 </label>
                 <label class="customRadio"><span class="labelText">5</span>
-                <input type="radio" id="rounds_amount2" v-model="rounds" value="5" v-on:change="roundsButtonChange($event)">
+                <input type="radio" id="rounds_amount2" v-model="rounds" value=5 v-on:change="roundsButtonChange($event)">
                 </label>
                 <label class="customRadio"><span class="labelText">10</span>
-                <input type="radio" id="rounds_amount3" v-model="rounds" value="10" v-on:change="roundsButtonChange($event)">
+                <input type="radio" id="rounds_amount3" v-model="rounds" value=10 v-on:change="roundsButtonChange($event)">
                 </label>
               </form>
               </div>
@@ -41,13 +41,13 @@
               <button v-if="!showTimeForm" v-on:click="showTimeForm = !showTimeForm">{{time}} {{uiLabels.seconds}}</button>
               <form id="gameSelectionsOptionForm" v-if="showTimeForm">
                 <label class="customRadio"> <span class="labelText">30</span>
-                <input type="radio" id="time_amount1" v-model="time" value="30" v-on:change="timeButtonChange($event)">
+                <input type="radio" id="time_amount1" v-model="time" value=30 v-on:change="timeButtonChange($event)">
                 </label>
                 <label class="customRadio"><span class="labelText">45</span>
-                <input type="radio" id="time_amount2" v-model="time" value="45" v-on:change="timeButtonChange($event)">
+                <input type="radio" id="time_amount2" v-model="time" value=45 v-on:change="timeButtonChange($event)">
                 </label>
                 <label class="customRadio"><span class="labelText">60</span>
-                <input type="radio" id="time_amount3" v-model="time" value="60" v-on:change="timeButtonChange($event)">
+                <input type="radio" id="time_amount3" v-model="time" value=60 v-on:change="timeButtonChange($event)">
                 </label>
               </form>
               </div>
@@ -197,22 +197,12 @@ export default {
       this.showTimeForm = !this.showTimeForm;
       this.sendUpdatedGameOptions();
     },
-    teamButtonChange: function(){
-      if(this.teams){
-        this.teamText = "Team"
-      }
-      else{
-        this.teamText = "No team"
-      }
-      this.showTeamForm = !this.showTeamForm;
-      this.sendUpdatedGameOptions();
-    },
     start: function() {
       socket.emit("startGame", this.pollId)
       this.$router.push("/InsertTruths/" + this.pollId + "/" + this.userName)
     },
     sendUpdatedGameOptions: function(){
-      socket.emit("GameOptionsChange", {pollId: this.pollId, data: {rounds: this.rounds, time: this.time, teams: this.teams}})
+      socket.emit("GameOptionsChange", {pollId: this.pollId, data: {time: Number(this.time), rounds: Number(this.rounds),  teams: this.teams}})
     }
   }
 }

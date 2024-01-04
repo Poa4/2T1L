@@ -21,7 +21,7 @@
           </form>
           <button @click="this.debounce(),
                           generateRandomAvatar" class="generateRandomAvatarsButton">CLICK ME FOR NEW EMOJIS!!</button><br>
-          <button @click="showJoinGameModal = false">X</button>
+          <button @click="$router.push('/')">X</button>
         </div>
       </div>
 
@@ -43,12 +43,19 @@ export default {
       avatars: [],
       chosenAvatar: "",
   }
-  },
-  created: function() {
-    this.debounce =  this.debounceGenerateRandomAvatarButton(this.generateRandomAvatar, 1000)
-    this.joinGameCode = window.location.href.split("lobby/").pop()
 
   },
+  created: function() {
+    this.debounce =  this.debounceGenerateRandomAvatarButton(this.generateRandomAvatar, 1000);
+    this.joinGameCode = window.location.href.split("lobby/").pop();
+    
+
+  },
+  mounted: function() {
+    this.generateRandomAvatar();
+
+  },
+
   methods: {
     joinGame: function () {
       socket.emit("submitUserName", {pollId: this.joinGameCode, name: this.playerName, avatar: this.chosenAvatar});
@@ -113,5 +120,7 @@ export default {
   .generateRandomAvatarsButton {
     grid-column: 1/5;
   }
+
+
 
 </style>
