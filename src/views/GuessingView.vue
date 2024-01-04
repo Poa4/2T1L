@@ -1,6 +1,7 @@
 <template>
   <body>
   <h1>{{uiLabels.spotTheLie}}</h1>
+  <div v-if="this.roundInfo.questions.length">
   <div class="participantInfoDiv">
     <div class="participantInfoDivProperties">
       {{this.roundInfo.questions[3].avatar}}
@@ -12,14 +13,13 @@
       </div>
     </div>
     <div v-else>
-      <div v-if="this.roundInfo.questions.length">
       </div>
       <div v-if="!(this.roundInfo.questions[3].name === this.userName)">
         <div v-for="(answer, index) in roundInfo.questions.slice(0,3)" :key="index">
           <input type="radio" :id="'answer' + index" v-model="selectedLieIndex" :value="index" />
           <label :for="'answer' + index">{{ answer }}</label>
         </div>
-        <button @click="selectLie(); this.submittedAnswer = true">{{uiLabels.submitButton}}</button>
+        <button @click="selectLie(); changeSubmittedAnswerBoolean(); ">{{uiLabels.submitButton}}</button>
       </div>
       <div v-else>
         <div v-for="(answer, index) in roundInfo.questions.slice(0,3)" :key="index">
@@ -78,12 +78,16 @@ export default {
     socket.on("showAnswer", (correctAnswer, allAnswers) => {
       this.correctAnswer = correctAnswer;
       this.placeAnswers(allAnswers);
-      this.questionDone = true;
+      this.submittedAnswer = true;
     })
     socket.emit("pageLoaded", this.lang);
     socket.on("init", (labels) => {this.uiLabels = labels})
   },
   methods: {
+    changeSubmittedAnswerBoolean() {
+      setTimeout(() =>
+      {this.submittedAnswer = true}, 3000);
+    },
     startTimer() {
       let t = setInterval( () => {
         this.timer--;
