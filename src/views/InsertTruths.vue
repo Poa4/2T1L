@@ -13,12 +13,13 @@
             <label for="lie"></label>
                         <input type="text" id="lie" v-model="lie" name="lie" required="required" placeholder="Lie" ><br>
             </div>
-            <button v-on:click="submit" :disabled="!b2Disabled">
+            
+            </div>
+          <button v-on:click="prev" :disabled="b1Disabled">&laquo; Prev</button>
+          <button v-on:click="next" :disabled="b2Disabled">Next &raquo;</button>
+          <button v-on:click="submit" :disabled="!b2Disabled">
             Lock in answers
             </button>
-            </div>
-          <button v-on:click="prev" :disabled="b1Disabled">Prev</button>
-          <button v-on:click="next" :disabled="b2Disabled">Next</button>
 
             <div v-if="!editWindow">
             <button v-on:click="t"> test till nästa </button>
@@ -177,7 +178,7 @@ export default {
      background-color: #1E152A;
     }
     input{
-    width: 100%;
+    width: 90%;
     height: 33%;
       padding: 12px 20px;
       margin: 8px 0;
@@ -191,13 +192,13 @@ export default {
       opacity: 0.7; 
     }
     .insert{
-    background-color: white;
+    background-color: #1E152A;
     }
     button{
-           width:100%;
+           width:48%;
            background: #DA4167;
            font-size: 200%;
-           margin: auto;
+           margin: 1%;
            height: 4em;
     }
     .timer{
@@ -205,9 +206,8 @@ export default {
 
     button[disabled]{
     background: #5f5f5f;
+    pointer-events: none;
    }
-   button:hover:enabled{
-    color: white
-   }
+   
 
     </style>
