@@ -206,6 +206,8 @@ export default {
     button[disabled]{
     background: #5f5f5f;
    }
-
+   button:hover:enabled{
+    color: white
+   }
 
     </style>
