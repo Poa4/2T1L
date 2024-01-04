@@ -13,7 +13,7 @@
             <label for="lie"></label>
                         <input type="text" id="lie" v-model="lie" name="lie" required="required" placeholder="Lie" ><br>
             </div>
-            <button v-on:click="submit">
+            <button v-on:click="submit" :disabled="!b2Disabled">
             Lock in answers
             </button>
             </div>
@@ -197,6 +197,8 @@ export default {
            width:100%;
            background: #DA4167;
            font-size: 200%;
+           margin: auto;
+           height: 4em;
     }
     .timer{
     color:white}
