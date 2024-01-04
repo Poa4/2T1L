@@ -19,7 +19,7 @@
           <input type="radio" :id="'answer' + index" v-model="selectedLieIndex" :value="index" />
           <label :for="'answer' + index">{{ answer }}</label>
         </div>
-        <button @click="selectLie(); changeSubmittedAnswerBoolean(); ">{{uiLabels.submitButton}}</button>
+        <button @click="selectLie(); submitAnswerView();">{{uiLabels.submitButton}}</button>
       </div>
       <div v-else>
         <div v-for="(answer, index) in roundInfo.questions.slice(0,3)" :key="index">
@@ -78,13 +78,12 @@ export default {
     socket.on("showAnswer", (correctAnswer, allAnswers) => {
       this.correctAnswer = correctAnswer;
       this.placeAnswers(allAnswers);
-      this.submittedAnswer = true;
     })
     socket.emit("pageLoaded", this.lang);
     socket.on("init", (labels) => {this.uiLabels = labels})
   },
   methods: {
-    changeSubmittedAnswerBoolean() {
+    submitAnswerView() {
       setTimeout(() =>
       {this.submittedAnswer = true}, 3000);
     },
@@ -98,7 +97,7 @@ export default {
       }, 1000);
     },
     selectLie() {
-      socket.emit("sendSelectedLie",this.pollId, this.userName ,this.question[this.selectedLieIndex]);
+      socket.emit("sendSelectedLie",this.pollId, this.userName ,this.roundInfo.questions[this.selectedLieIndex]);
     },
     clearArrays(){
       this.roundInfo.participantAnswer = [[],[],[],[]];
