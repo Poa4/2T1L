@@ -27,13 +27,13 @@ export default {
   },
   created: function(){
     this.pollId = this.$route.params.id;
+    socket.emit("pageLoaded", this.lang);
+    socket.on("init", (labels) => {this.uiLabels = labels})
     socket.emit("joinPoll", this.pollId);
     socket.emit("GetScore", this.pollId);
     socket.on("sendScore", (particpentsList) => {
-      this.scoreList = particpentsList
+      this.scoreList = particpentsList;
     });
-    socket.emit("pageLoaded", this.lang);
-    socket.on("init", (labels) => {this.uiLabels = labels})
   },
   methods: {
     sortedHighScore: function (arr) {

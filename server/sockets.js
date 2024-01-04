@@ -129,7 +129,7 @@ function sockets(io, socket, data) {
   socket.on("GetScore", function(pollId){
     const participants = data.getParticipents(pollId);
     io.to(pollId).emit("sendScore", participants);
-    data.removePoll(pollId);
+    setTimeout(() => {data.removePoll(pollId)}, 5000)
   })
 
 
