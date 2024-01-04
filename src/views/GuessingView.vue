@@ -93,7 +93,7 @@ export default {
       this.roundInfo.questions = question;
       this.timer = setTimeout(() => {
         this.selectLie(this.lieIndex)
-      }, this.timeInfo * 100000);
+      }, this.timeInfo * 1000);
     });
     socket.on("updateRound", () => {
       socket.emit("ReadyToGo", this.pollId)
