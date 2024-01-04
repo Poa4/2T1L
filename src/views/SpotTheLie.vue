@@ -3,7 +3,7 @@
 	<body>
 <div class="firstPart">
 	<h1>
-Spot the lie!
+{{uiLabels.spotTheLie}}
 </h1>
 <br>
 <img src="https://cdn.iconscout.com/icon/free/png-256/free-avatar-370-456322.png?f=webp">
@@ -43,10 +43,16 @@ export default {
 				a2: "Statement 2",
 				a3: "Statement 3"
 
-			}
+			},
+		     uiLabels: {},
+               lang: localStorage.getItem("lang") || "en",
 		}
 
-	}
+	},
+  created: function() {
+    socket.emit("pageLoaded", this.lang);
+    socket.on("init", (labels) => {this.uiLabels = labels})
+     }
 }
 </script>
 <style scoped>

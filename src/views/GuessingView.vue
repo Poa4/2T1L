@@ -1,7 +1,7 @@
 <template>
   <body>
   <div v-if="this.question.length">
-    <h1>Spot the lie!</h1>
+    <h1>{{uiLabels.spotTheLie}}</h1>
     <div class="participantAvatarDiv">
       {{question[3].avatar}}<br>
     </div>
@@ -10,7 +10,7 @@
       <input type="radio" :id="'answer' + index" v-model="selectedLieIndex" :value="index" />
       <label :for="'answer' + index">{{ answer }}</label>
     </div>
-    <button @click="selectLie">Submit</button>
+    <button @click="selectLie">{{uiLabels.submitButton}}</button>
   </div>
   <section v-if="questionDone">
     <div v-for="particpent in answerArray1"> Första{{ particpent  }}</div>
@@ -43,7 +43,9 @@ export default {
       answerArray1: [],
       answerArray2: [],
       answerArray3: [],
-      shameArray: []
+      shameArray: [],
+      uiLabels: {},
+          lang: localStorage.getItem("lang") || "en",
 
     }
   },
@@ -72,6 +74,8 @@ export default {
       
 
     })
+        socket.emit("pageLoaded", this.lang);
+        socket.on("init", (labels) => {this.uiLabels = labels})
   },
   methods: {
     startTimer() {

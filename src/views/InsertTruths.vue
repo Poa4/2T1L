@@ -7,18 +7,18 @@
             <div v-if="editWindow">
             <div class="insert">
             <label for="truth1"></label>
-                        <input type="text" id="truth1" v-model="truth1" name="t1" required="required" placeholder="Truth 1" ><br>
+                        <input type="text" id="truth1" v-model="truth1" name="t1" required="required" :placeholder="uiLabels.truth1" ><br>
             <label for="truth2"></label>
-                        <input type="text" id="truth2" v-model="truth2" name="t2" required="required" placeholder="Truth 2" ><br>
+                        <input type="text" id="truth2" v-model="truth2" name="t2" required="required" :placeholder="uiLabels.truth2" ><br>
             <label for="lie"></label>
-                        <input type="text" id="lie" v-model="lie" name="lie" required="required" placeholder="Lie" ><br>
+                        <input type="text" id="lie" v-model="lie" name="lie" required="required" :placeholder="uiLabels.lie" ><br>
             </div>
             
             </div>
-          <button v-on:click="prev" :disabled="b1Disabled">&laquo; Prev</button>
-          <button v-on:click="next" :disabled="b2Disabled">Next &raquo;</button>
+          <button v-on:click="prev" :disabled="b1Disabled">&laquo; {{uiLabels.prev}}</button>
+          <button v-on:click="next" :disabled="b2Disabled">{{uiLabels.next}} &raquo;</button>
           <button v-on:click="submit" :disabled="!b2Disabled">
-            Lock in answers
+            {{uiLabels.lockInAnswers}}
             </button>
 
             <div v-if="!editWindow">
@@ -48,8 +48,9 @@ export default {
       currentQuestion: 0,
       b1Disabled: true,
       b2Disabled: false,
-      editWindow: true
-
+      editWindow: true,
+         uiLabels: {},
+              lang: localStorage.getItem("lang") || "en",
   }
   },
   created: function() {
@@ -57,8 +58,10 @@ export default {
     this.userName = this.$route.params.uid;
     socket.emit("joinPoll", this.pollId);
     socket.emit("getRoundInfo", this.pollId);
-    socket.on("sendRoundInfo", (roundInfo) => this.numberOfRounds = roundInfo)
-  },
+    socket.on("sendRoundInfo", (roundInfo) => this.numberOfRounds = roundInfo);
+    socket.emit("pageLoaded", this.lang);
+    socket.on("init", (labels) => {this.uiLabels = labels})
+     },
   methods: {
     submit: function(){
       if(this.checkFields()){ 

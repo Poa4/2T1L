@@ -3,9 +3,9 @@
           <section class="wrapper"> 
             <div id="first">
                 <p>
-                  Game ID: {{pollId}}
+                  {{uiLabels.gameID}} {{pollId}}
                   <br/>
-                    Join at: <a v-bind:href="website">{{ website }} </a>
+                    {{uiLabels.joinAt}} <a v-bind:href="website">{{ website }} </a>
                 </p>
             </div>
             <div id="second">
@@ -13,7 +13,7 @@
                 <qrcode-vue :value="QRvalue" :size="size" level="H" /> <!--kan sätta in nya variabler på value och size för att ändra -->
               </div>
                 <p>
-                  Join through your phone
+                  {{uiLabels.joinQR}}
                 </p>
             </div>
           </section>
@@ -22,7 +22,7 @@
           <section class="wrapper2">
             <div class="doubleAlign">
               <div class="gameOptions">
-              <button v-if="!showRoundsForm" v-on:click="showRoundsForm = !showRoundsForm">{{rounds}} rounds</button>
+              <button v-if="!showRoundsForm" v-on:click="showRoundsForm = !showRoundsForm">{{rounds}} {{uiLabels.rounds}}</button>
               <form id="gameSelectionsOptionForm" v-if="showRoundsForm">
                 <label class="customRadio"> <span class="labelText">2</span>
                 <input type="radio" id="rounds_amount1" v-model="rounds" value="2" v-on:change="roundsButtonChange($event)">
@@ -38,7 +38,7 @@
 
 
               <div class="gameOptions">
-              <button v-if="!showTimeForm" v-on:click="showTimeForm = !showTimeForm">{{time}} seconds</button>
+              <button v-if="!showTimeForm" v-on:click="showTimeForm = !showTimeForm">{{time}} {{uiLabels.seconds}}</button>
               <form id="gameSelectionsOptionForm" v-if="showTimeForm">
                 <label class="customRadio"> <span class="labelText">30</span>
                 <input type="radio" id="time_amount1" v-model="time" value="30" v-on:change="timeButtonChange($event)">
@@ -67,7 +67,7 @@
 
           <section>
             <button v-on:click="start" id="startgame">
-              Start game
+              {{uiLabels.startGame}}
             </button>
           </section>
 

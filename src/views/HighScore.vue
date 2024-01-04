@@ -1,11 +1,11 @@
 <template>
 <header class="headline">
-        <h1>HighScore</h1>
+        <h1>{{uiLabels.highScore}}</h1>
     </header>
 
 <main class="headline">
     <p v-for="(item, index) in sortedHighScore(scoreList)">
-     {{ index + 1}}:a {{ item.name }} {{ item.avatar }} - {{ item.score }} poäng
+     {{ index + 1}}:a {{ item.name }} {{ item.avatar }} - {{ item.score }} {{uiLabels.points}}
     </p>
 </main>
 </template>
@@ -20,8 +20,9 @@ export default {
   data: function () {
     return {
         highScoreList: [{"participant": "participant 1", "score": 3}, {"participant": "Participant 2", "score": 5}, {"participant": "Participant 3", "score":4 }],
-        scoreList: []
-
+        scoreList: [],
+		uiLabels: {},
+            lang: localStorage.getItem("lang") || "en",
     }
   },
   created: function(){
@@ -30,7 +31,9 @@ export default {
     socket.emit("GetScore", this.pollId);
     socket.on("sendScore", (particpentsList) => {
       this.scoreList = particpentsList
-    })
+    });
+    socket.emit("pageLoaded", this.lang);
+    socket.on("init", (labels) => {this.uiLabels = labels})
   },
   methods: {
     sortedHighScore: function (arr) {

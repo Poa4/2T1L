@@ -3,9 +3,9 @@
       <section class="wrapper"> 
         <div id="first">
             <p>
-              Game ID: {{pollId}}
+              {{uiLabels.gameID}} {{pollId}}
               <br/>
-                Join at: <a v-bind:href="website">{{ website }} </a>
+                {{uiLabels.joinAt}} <a v-bind:href="website">{{ website }} </a>
             </p>
         </div>
         <div id="second">
@@ -13,7 +13,7 @@
             <qrcode-vue :value="QRvalue" :size="size" level="H" /> <!--kan sätta in nya variabler på value och size för att ändra -->
           </div>
             <p>
-              Join through your phone
+              {{uiLabels.joinQR}}
             </p>
         </div>
       </section>
@@ -44,7 +44,7 @@
 
       <section>
         <p id="waitingToStart">
-          <button v-on:click="leaveLobby()"> Leave </button>
+          <button v-on:click="leaveLobby()"> {{uiLabels.leaveButton}} </button>
           <!-- Waiting for host to start the game -->
         </p>
       </section>

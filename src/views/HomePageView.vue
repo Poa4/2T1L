@@ -5,32 +5,35 @@
   <div class="frontButtons">
   <button @click="showCreateGameModal = true;
   generateRandomAvatar();
-  generateGameCode();" class="createGameButton">Create Game</button>
+  generateGameCode();" class="createGameButton">{{uiLabels.createGame}}</button>
   <button @click="showJoinGameModal = true;
   generateRandomAvatar();
-  " class="joinGameButton">Join Game</button>
+  " class="joinGameButton">{{uiLabels.joinGame}}</button>
+  </div>
+  <div>
+  <button v-on:click="switchLanguage">{{uiLabels.changeLanguage}}</button>
   </div>
   <div>
   <div v-if="showCreateGameModal" class="modal">
   <div class="modalContent">
   <form @submit.prevent="createGame()">
-  <label for="playerName">Choose your nickname</label><br>
+  <label for="playerName">{{uiLabels.nickname}}</label><br>
   <input type="text" id="playerName" v-model="playerName" placeholder="Name" required="required"><br><br>
-  <label for="gameCode">Enter the room code:</label><br>
+  <label for="gameCode">{{uiLabels.roomCode}}</label><br>
   <input type="text" id="gameCode" placeholder="Code" v-model="gameCode" readonly><br><br>
-  <label for="avatar">Pick a avatar:</label><br>
+  <label for="avatar">{{uiLabels.avatar}}</label><br>
   <div class="avatarDiv">
   <span class="avatars" v-for="emoji in avatars">
   <input type="radio" name="avatar" @click="chooseAvatar(emoji)" required="required">{{emoji}}</span>
   </div>
   <div class="gameSettings">
   </div>
-  <button>Create Game</button>
+  <button>{{uiLabels.createGame}}</button>
   </form>
   
   
   <button @click="this.debounce(),
-  generateRandomAvatar" class="generateRandomAvatarsButton">CLICK ME FOR NEW EMOJIS!!</button><br>
+  generateRandomAvatar" class="generateRandomAvatarsButton">{{uiLabels.newEmojis}}</button><br>
   
   <button @click="showCreateGameModal = false" class="exitButton">X</button>
   </div>
@@ -42,11 +45,11 @@
   <div v-if="showJoinGameModal" class="modal">
   <div class="modalContent">
   <form @submit.prevent="joinGame()">
-  <label for="playerName">Choose your nickname</label><br>
+  <label for="playerName">{{uiLabels.nickname}}</label><br>
   <input type="text" id="playerName" placeholder="Name" v-model="playerName" required="required"><br><br>
-  <label for="gameCode">Enter the room code:</label><br>
+  <label for="gameCode">{{uiLabels.roomCode}}:</label><br>
   <input type="text" id="gameCode" placeholder="Code" v-model="joinGameCode" required="required"><br><br>
-  <label for="avatar">Pick a avatar:</label><br>
+  <label for="avatar">{{uiLabels.avatar}}:</label><br>
   <div class="avatarDiv">
   <span class="avatars" v-for="(emoji,index) in avatars"
   :key="index">
@@ -54,10 +57,10 @@
   </div>
   
   
-  <button>Join Game</button>
+  <button>{{uiLabels.joinGame}}</button>
   </form>
   <button @click="this.debounce(),
-  generateRandomAvatar" class="generateRandomAvatarsButton">CLICK ME FOR NEW EMOJIS!!</button><br>
+  generateRandomAvatar" class="generateRandomAvatarsButton">{{uiLabels.newEmojis}}</button><br>
   <button @click="showJoinGameModal = false" class="exitButton">X</button>
   </div>
   </div>
@@ -90,10 +93,18 @@
   gameSettings: {"rounds": 2,
   "time": 60,
   "teams": 1,},
+   uiLabels: {},
+        id: "",
+        testCreateId: "test",
+        lang: localStorage.getItem("lang") || "en"
   }
   },
   created: function() {
-  this.debounce = this.debounceGenerateRandomAvatarButton(this.generateRandomAvatar, 1000)
+  this.debounce = this.debounceGenerateRandomAvatarButton(this.generateRandomAvatar, 1000);
+      socket.emit("pageLoaded", this.lang);
+      socket.on("init", (labels) => {
+        this.uiLabels = labels
+      })
   },
   methods: {
   createGame: function (){
@@ -129,7 +140,17 @@
   this.avatars.push(randomEmoji.character);
   }
   })
-  }
+  },
+      switchLanguage: function() {
+        if (this.lang === "en") {
+          this.lang = "sv"
+        }
+        else {
+          this.lang = "en"
+        }
+        localStorage.setItem("lang", this.lang);
+        socket.emit("switchLanguage", this.lang)
+      }
   }
   }
   </script>

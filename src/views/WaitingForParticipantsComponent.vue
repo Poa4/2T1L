@@ -1,7 +1,7 @@
 <template>
   <body>
   <h1>
-    Hello, you are waiting
+    {{uiLabels.waitingForParticipants}}
   </h1>
   </body>
 </template>
@@ -17,6 +17,8 @@ export default  {
     return {
       pollId: "",
       userName: "",
+      uiLabels: {},
+         lang: localStorage.getItem("lang") || "en",
     }
   },
   created: function(){
@@ -26,6 +28,8 @@ export default  {
     socket.on("startRound", () => {
       this.$router.push("/GuessingView/" + this.pollId + "/" + this.userName)
     });
+        socket.emit("pageLoaded", this.lang);
+        socket.on("init", (labels) => {this.uiLabels = labels})
   }
 }
 </script>
