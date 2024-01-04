@@ -1,63 +1,85 @@
 <template>
   <body>
-  <h1>{{uiLabels.spotTheLie}}</h1>
-  <div v-if="this.roundInfo.questions.length">
-  <div class="participantInfoDiv">
-    <div class="participantInfoDivProperties">
-      {{this.roundInfo.questions[3].avatar}}
-      {{this.roundInfo.questions[3].name}}
-    </div>
-    <div v-if="submittedAnswer">
-      <div v-for="(answer, index) in roundInfo.questions.slice(0,3)" :key="index">
-        {{answer}} {{roundInfo.participantAnswer[index].join(", ")}}
-      </div>
-    </div>
-    <div v-else>
-      </div>
-      <div v-if="!(this.roundInfo.questions[3].name === this.userName)">
-        <div v-for="(answer, index) in roundInfo.questions.slice(0,3)" :key="index">
-          <input type="radio" :id="'answer' + index" v-model="selectedLieIndex" :value="index" />
-          <label :for="'answer' + index">{{ answer }}</label>
+  <div class="gridContainer">
+    <h1 class="spotTheLieH1">{{ uiLabels.spotTheLie }}</h1>
+    <div v-if="this.roundInfo.questions.length">
+      <div class="participantInfoDiv">
+        <div class="participantInfoDivProperties">
+          {{ this.roundInfo.questions[3].avatar }}
+          {{ this.roundInfo.questions[3].name }}
         </div>
-        <button @click="selectLie(); submitAnswerView();">{{uiLabels.submitButton}}</button>
-      </div>
-      <div v-else>
-        <div v-for="(answer, index) in roundInfo.questions.slice(0,3)" :key="index">
-          {{answer}} {{roundInfo.participantAnswer[index].join(", ")}}
+        <div>
+          <div v-if="submittedAnswer" class="buttonAndAnswerContainer">
+            <div>
+              <div class="buttonsContainer">
+                <button :disabled="isDisabled" v-for="(answer, index) in roundInfo.questions.slice(0,3)" :key="index"
+                        :class="'button' + index"
+                        @click="selectLie(index); submitAnswerView();">{{ answer }}
+                </button>
+              </div>
+              <div v-for="(answer, index) in roundInfo.questions.slice(0,3)" :key="index" class="participantAnswerDiv">
+                {{ answer }} {{ roundInfo.participantAnswer[index].join(", ") }}
+              </div>
+            </div>
+          </div>
+          <div v-else class="buttonAndAnswerContainer">
+            <div>
+              <div v-if="!(this.roundInfo.questions[3].name === this.userName)" class="buttonsContainer">
+                <button v-for="(answer, index) in roundInfo.questions.slice(0,3)" :key="index" :class="'button' + index"
+                        @click="this.lieIndex = index; submitAnswerView();selectLie(index); ">{{ answer }}
+                </button>
+              </div>
+              <div v-else>
+                <div class="buttonsContainer">
+                  <button v-for="(answer, index) in roundInfo.questions.slice(0,3)" :key="index"
+                          :class="'button' + index"
+                          :disabled="isDisabled">{{ answer }}
+                  </button>
+                </div>
+                <div class="participantAnswerDiv">
+                  <span v-for="(answer, index) in roundInfo.questions.slice(0,3)" :key="index">
+                    {{ answer }} {{ roundInfo.participantAnswer[index].join(", ") }}
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
   </body>
 
 </template>
 
-<script >
+<script>
 import io from "socket.io-client";
+
 const socket = io("http://127.0.0.1:3000");
 
 export default {
   name: "GuessingView",
-  data: function() {
+  data: function () {
     return {
       pollId: "",
       userName: "",
       timeInfo: null,
-      currentParticipantIndex: 0,
-      selectedLieIndex: "",
+      lieIndex: 0,
       participants: [],
       question: [],
-      timer: 0,
+      timer: null,
       correctAnswer: "",
+      isDisabled: true,
       questionDone: false,
       submittedAnswer: false,
-      roundInfo: {questions: [], participantAnswer: [[],[],[],[]] },
+      roundInfo: {questions: [], participantAnswer: [[], [], [], []]},
+      selfSentBoolean: false,
       uiLabels: {},
       lang: localStorage.getItem("lang") || "en",
     }
   },
-  created: function() {
+  created: function () {
     this.pollId = this.$route.params.id;
     this.userName = this.$route.params.uid;
     socket.emit("joinPoll", this.pollId);
@@ -69,9 +91,13 @@ export default {
     socket.on("startingRounds", (question) => {
       this.clearArrays();
       this.roundInfo.questions = question;
+      this.timer = setTimeout(() => {
+        this.selectLie(this.lieIndex)
+      }, this.timeInfo * 100000);
     });
     socket.on("updateRound", () => {
-      socket.emit("ReadyToGo", this.pollId)});
+      socket.emit("ReadyToGo", this.pollId)
+    });
 
     socket.on("endGame", () =>
         this.$router.push("/ScoreBoard/" + this.pollId));
@@ -80,67 +106,87 @@ export default {
       this.placeAnswers(allAnswers);
     })
     socket.emit("pageLoaded", this.lang);
-    socket.on("init", (labels) => {this.uiLabels = labels})
+    socket.on("init", (labels) => {
+      this.uiLabels = labels
+    })
+
   },
   methods: {
     submitAnswerView() {
-      setTimeout(() =>
-      {this.submittedAnswer = true}, 3000);
+      this.selfSentBoolean = true;
+      setTimeout(() => {
+        this.submittedAnswer = true
+      }, 3000);
     },
-    startTimer() {
-      let t = setInterval( () => {
-        this.timer--;
-        if(this.timer <= 0){
-          this.timer = this.timeInfo;
-          clearInterval(t)
-        }
-      }, 1000);
+    selectLie(lieIndex) {
+      if (this.timer) {
+        clearTimeout(this.timer)
+      }
+      if (this.selfSentBoolean) {
+        socket.emit("sendSelectedLie", this.pollId, this.userName, this.roundInfo.questions[lieIndex]);
+      } else {
+        socket.emit("sendSelectedLie", this.pollId, this.userName, "loser");
+        this.roundInfo.participantAnswer[3].push(a.userName)
+      }
     },
-    selectLie() {
-      socket.emit("sendSelectedLie",this.pollId, this.userName ,this.roundInfo.questions[this.selectedLieIndex]);
-    },
-    clearArrays(){
-      this.roundInfo.participantAnswer = [[],[],[],[]];
+    clearArrays() {
+      this.lieIndex = null;
+      this.roundInfo.participantAnswer = [[], [], [], []];
       this.submittedAnswer = false;
     },
-    placeAnswers(allAnswers){
-      console.log(allAnswers)
+    placeAnswers(allAnswers) {
       allAnswers.forEach(a => {
-        if(a.answer === this.question[0]){
+        if (a.answer === this.question[0]) {
           this.roundInfo.participantAnswer[0].push(a.userName)
-        }
-        else if(a.answer === this.question[1]){
+        } else if (a.answer === this.question[1]) {
           this.roundInfo.participantAnswer[1].push(a.userName)
-        }
-        else if(a.answer === this.question[2]){
+        } else if (a.answer === this.question[2]) {
           this.roundInfo.participantAnswer[2].push(a.userName)
-        }
-        else{
+        } else {
           this.roundInfo.participantAnswer[3].push(a.userName)
         }
+        console.log(this.roundInfo.participantAnswer[0],this.roundInfo.participantAnswer[1],this.roundInfo.participantAnswer[2],this.roundInfo.participantAnswer[3])
       });
     }
   },
 }
 </script>
 
-<style>
+<style scoped>
 body {
-  color:white
+  color: white;
+  display: grid;
+}
+
+.gridContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.spotTheLieH1 {
+
 }
 
 .participantInfoDiv {
-  display: grid;
-  grid-template-columns: 100%;
-  grid-template-rows: 100%;
-}
-.participantInfoDivProperties {
   font-size: 2em;
 }
 
-.participantName {
+.buttonAndAnswerContainer {
+  display: flex;
+  justify-content: center;
 }
 
-.participantAvatarDiv {
+.buttonsContainer {
+  display: flex;
+  flex-direction: column;
+
+}
+
+.participantAnswerDiv {
+  display: flex;
+  flex-direction: column;
+
+  gap: 19%;
+
 }
 </style>
