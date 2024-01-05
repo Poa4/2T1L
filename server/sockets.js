@@ -126,6 +126,12 @@ function sockets(io, socket, data) {
       }
   } );
 
+  socket.on("doesUserExistInLobby", function(data, callback) {
+        let doesUserExist = data.doesUserExistInLobby(data.pollId, data.name, data.chosenAvatar);
+        callback(doesUserExist)
+      }
+  )
+
   socket.on("GetScore", function(pollId){
     const participants = data.getParticipents(pollId);
     io.to(pollId).emit("sendScore", participants);
