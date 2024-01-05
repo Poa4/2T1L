@@ -125,12 +125,13 @@ function sockets(io, socket, data) {
         }, 3000)
       }
   } );
-
-  socket.on("doesUserExistInLobby", function(data, callback) {
-        let doesUserExist = data.doesUserExistInLobby(data.pollId, data.name, data.chosenAvatar);
+  
+  socket.on("doesUserExistInLobby", function(d, callback) {
+    console.log("datan som kommer", d)
+    let doesUserExist = data.doesUserExistInLobby(d.pollId, d.name)
         callback(doesUserExist)
       }
-  )
+  );
 
   socket.on("GetScore", function(pollId){
     const participants = data.getParticipents(pollId);

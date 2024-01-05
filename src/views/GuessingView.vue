@@ -113,7 +113,7 @@ export default {
       this.selfSentBoolean = true;
       setTimeout(() => {
         this.submittedAnswer = true
-      }, 3000);
+      }, 0);
     },
     selectLie(lieIndex) {
       if (this.timer) {

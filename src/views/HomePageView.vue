@@ -123,9 +123,8 @@ export default {
     },
     joinGame: function () {
       socket.emit("doesUserExistInLobby", {
-            pollId: this.gameCode,
-            name: this.playerName,
-            avatar: this.chosenAvatar},
+            pollId: this.joinGameCode,
+            name: this.playerName,},
           (response) => {
             if(response) {
               alert("A user has the same name and/or avatar in the lobby.")
