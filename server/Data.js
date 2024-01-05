@@ -255,7 +255,7 @@ Data.prototype.addAnswer = function(pollId,userName,lie){
       if(question.lie === lie){
         participant.score++;
       }
-      poll.answers.push({userName: userName, answer: lie})
+      poll.answers.push({userName: userName, answer: lie, avatar: participant.avatar})
   }
 }
 

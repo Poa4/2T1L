@@ -14,11 +14,9 @@
               <div class="buttonsContainer">
                 <button :disabled="isDisabled" v-for="(answer, index) in roundInfo.questions.slice(0,3)" :key="index"
                         :class="'button' + index"
-                        @click="selectLie(index); submitAnswerView();">{{ answer }}
+                        @click="selectLie(index); submitAnswerView();">
+                  {{ answer }}{{ this.roundInfo.participantAnswer[index].join(", ") }}
                 </button>
-              </div>
-              <div v-for="(answer, index) in roundInfo.questions.slice(0,3)" :key="index" class="participantAnswerDiv">
-                {{ answer }} {{ roundInfo.participantAnswer[index].join(", ") }}
               </div>
             </div>
           </div>
@@ -33,13 +31,10 @@
                 <div class="buttonsContainer">
                   <button v-for="(answer, index) in roundInfo.questions.slice(0,3)" :key="index"
                           :class="'button' + index"
-                          :disabled="isDisabled">{{ answer }}
+                          :disabled="isDisabled">
+                    {{answer}}
+                    <span>{{ this.roundInfo.participantAnswer[index].join(", ") }} </span>
                   </button>
-                </div>
-                <div class="participantAnswerDiv">
-                  <span v-for="(answer, index) in roundInfo.questions.slice(0,3)" :key="index">
-                    {{ answer }} {{ roundInfo.participantAnswer[index].join(", ") }}
-                  </span>
                 </div>
               </div>
 
@@ -91,9 +86,9 @@ export default {
     socket.on("startingRounds", (question) => {
       this.clearArrays();
       this.roundInfo.questions = question;
-      this.timer = setTimeout(() => {
-        this.selectLie(this.lieIndex)
-      }, this.timeInfo * 1000);
+      //this.timer = setTimeout(() => {
+      //  this.selectLie(this.lieIndex)
+      //}, this.timeInfo * 1000000);
     });
     socket.on("updateRound", () => {
       socket.emit("ReadyToGo", this.pollId)
@@ -103,7 +98,9 @@ export default {
         this.$router.push("/ScoreBoard/" + this.pollId));
     socket.on("showAnswer", (correctAnswer, allAnswers) => {
       this.correctAnswer = correctAnswer;
-      this.placeAnswers(allAnswers);
+    })
+    socket.on("showParticipantAnswersDuringRound", (participantAnswers) => {
+      this.placeAnswers(participantAnswers);
     })
     socket.emit("pageLoaded", this.lang);
     socket.on("init", (labels) => {
@@ -126,7 +123,6 @@ export default {
         socket.emit("sendSelectedLie", this.pollId, this.userName, this.roundInfo.questions[lieIndex]);
       } else {
         socket.emit("sendSelectedLie", this.pollId, this.userName, "loser");
-        this.roundInfo.participantAnswer[3].push(a.userName)
       }
     },
     clearArrays() {
@@ -136,16 +132,22 @@ export default {
     },
     placeAnswers(allAnswers) {
       allAnswers.forEach(a => {
-        if (a.answer === this.question[0]) {
-          this.roundInfo.participantAnswer[0].push(a.userName)
-        } else if (a.answer === this.question[1]) {
-          this.roundInfo.participantAnswer[1].push(a.userName)
-        } else if (a.answer === this.question[2]) {
-          this.roundInfo.participantAnswer[2].push(a.userName)
-        } else {
-          this.roundInfo.participantAnswer[3].push(a.userName)
+        if (a.answer === this.roundInfo.questions[0] && (this.roundInfo.participantAnswer[0].indexOf(a.avatar) === -1)) {
+          console.log("pushed to place 0")
+          this.roundInfo.participantAnswer[0].push(a.avatar)
         }
-        console.log(this.roundInfo.participantAnswer[0],this.roundInfo.participantAnswer[1],this.roundInfo.participantAnswer[2],this.roundInfo.participantAnswer[3])
+        else if (a.answer === this.roundInfo.questions[1] && (this.roundInfo.participantAnswer[1].indexOf(a.avatar) === -1)) {
+          console.log("pushed to place 1")
+          this.roundInfo.participantAnswer[1].push(a.avatar)
+        }
+        else if (a.answer === this.roundInfo.questions[2]&& (this.roundInfo.participantAnswer[2].indexOf(a.avatar) === -1)) {
+          console.log("pushed to place 2")
+          this.roundInfo.participantAnswer[2].push(a.avatar)
+        }
+        else if(this.roundInfo.participantAnswer[3].indexOf(a.avatar) === -1){
+          console.log("pushed to place 3")
+          this.roundInfo.participantAnswer[3].push(a.avatar)
+        }
       });
     }
   },
@@ -180,7 +182,9 @@ body {
   display: flex;
   flex-direction: column;
 
+
 }
+
 
 .participantAnswerDiv {
   display: flex;
