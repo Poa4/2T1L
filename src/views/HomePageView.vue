@@ -164,7 +164,7 @@
   }
   .playGameDiv {
   display: grid;
-  grid-template-rows: 200px 300px ;
+  grid-template-rows: 100px 250px 300px ;
   grid-template-columns:100px 300px 100px;
   justify-content: center;
   align-items: center;
@@ -181,13 +181,14 @@ h1{
 }
   .frontButtons{
   display:grid;
-  grid-template-rows: 1000px 100px 100px;
+  grid-template-rows: 820px 100px 100px;
   grid-template-columns:500px 200px 100px;
   justify-content: center;
   align-items: center;
   text-align: center;
   column-gap: 20px;
-  row-gap: 20px;
+  row-gap: 10px;
+  
   }
   .createGameButton {
   grid-column: 2/3;
