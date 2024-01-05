@@ -158,8 +158,8 @@
   
   <style>
   body {
+  overflow: hidden;
   background-color: #1E152A;
-  
   
   }
   .playGameDiv {
@@ -188,7 +188,7 @@ h1{
   text-align: center;
   column-gap: 20px;
   row-gap: 10px;
-  
+
   }
   .createGameButton {
   grid-column: 2/3;
