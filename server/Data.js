@@ -341,6 +341,15 @@ Data.prototype.doesUserExistInLobby = function(pollId, username){
   return false
 }
 
+Data.prototype.doesPollExist = function(pollId){
+  const poll = this.polls[pollId];
+  if (typeof poll !== 'undefined') {
+    return true;
+  }
+  return false;
+}
+
+
 Data.prototype.removePoll = function(pollId){
   const poll = this.polls[pollId];
   if (typeof poll !== 'undefined') {

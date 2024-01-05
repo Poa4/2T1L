@@ -55,12 +55,10 @@
             <input type="text" id="gameCode" placeholder="Code" v-model="joinGameCode" required="required"><br><br>
             <label for="avatar">{{ uiLabels.avatar }}:</label><br>
             <div class="avatarDiv">
-  <span class="avatars" v-for="(emoji,index) in avatars"
-        :key="index">
-  <input type="radio" name="avatar" @click="chooseAvatar(emoji)">{{ emoji }}</span>
+                <span class="avatars" v-for="(emoji,index) in avatars"
+                  :key="index">
+                    <input type="radio" name="avatar" @click="chooseAvatar(emoji)">{{ emoji }}</span>
             </div>
-
-
             <button>{{ uiLabels.joinGame }}</button>
           </form>
           <button @click="this.debounce();
@@ -122,21 +120,28 @@ export default {
       this.$router.push("/create/" + this.gameCode + "/" + this.playerName)
     },
     joinGame: function () {
-      socket.emit("doesUserExistInLobby", {
+      socket.emit("doesPollExist",this.joinGameCode,(response) => {
+        if(response){ //response, means that it found a game with that pollid
+          socket.emit("doesUserExistInLobby", {
             pollId: this.joinGameCode,
             name: this.playerName,},
-          (response) => {
-            if(response) {
-              alert("A user has the same name and/or avatar in the lobby.")
-            }
-            else{
+          (response) => { //if its true, then a player with the same name already exists
+            if(!response) {
               socket.emit("submitUserName", {
                 pollId: this.joinGameCode,
                 name: this.playerName,
                 avatar: this.chosenAvatar});
               this.$router.push("/lobby/" + this.joinGameCode + "/" + this.playerName)
             }
+            else{
+              alert("A user has the same name and/or avatar in the lobby.")
+            }
           });
+        }
+        else{
+          alert("No such poll exists")
+        }
+      })
     },
     generateGameCode: function () {
       this.gameCode = Math.random().toString().substring(2, 10);

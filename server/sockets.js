@@ -134,6 +134,12 @@ function sockets(io, socket, data) {
       }
   );
 
+  
+  socket.on("doesPollExist", function(pollId,callback){
+    let pollExists = data.doesPollExist(pollId);
+    callback(pollExists)
+  })
+
   socket.on("GetScore", function(pollId){
     const participants = data.getParticipents(pollId);
     io.to(pollId).emit("sendScore", participants);
