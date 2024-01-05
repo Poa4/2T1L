@@ -329,12 +329,23 @@ Data.prototype.randomizeQuestion = function(question){
   return question;
 }
 
+Data.prototype.doesUserExistInLobby = function(pollId, username, avatar) {
+  const poll = this.polls[pollId];
+  if (typeof poll !== 'undefined') {
+    const participant = poll.participents.find(p => p.name === username)
+    const avatar = poll.participents.find(p => p.avatar === avatar)
+    return participant !== "undefined" || avatar !== "undefined";
+  }
+}
+
+
 Data.prototype.removePoll = function(pollId){
   const poll = this.polls[pollId];
   if (typeof poll !== 'undefined') {
     delete this.polls[pollId];
   }
 }
+
 export { Data };
 
 
