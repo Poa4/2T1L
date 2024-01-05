@@ -120,18 +120,18 @@ export default {
       this.$router.push("/create/" + this.gameCode + "/" + this.playerName)
     },
     joinGame: function () {
-      const joinGameRequest = {
+      const request = {
         pollId: this.joinGameCode,
         name: this.playerName,
         avatar: this.chosenAvatar}
-      socket.emit("joinGame", joinGameRequest, callback => {
+      socket.emit("joinGame", request, callback => {
         if(callback.status === "You joined the lobby!"){
           this.$router.push("/lobby/" + this.joinGameCode + "/" + this.playerName);
         }
         else {
           alert(callback.status)
         }
-      })
+      });
     },
     generateGameCode: function () {
       this.gameCode = Math.random().toString().substring(2, 10);
