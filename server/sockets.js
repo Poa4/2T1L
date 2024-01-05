@@ -128,21 +128,17 @@ function sockets(io, socket, data) {
   } );
 
   socket.on("joinGame", function(d, callback) {
-    if (data.doesPollExist(d.pollId)){
-      if(!data.doesUserExistInLobby(d.pollId, d.name)){
-        data.submitUserName(d.pollId, d.name, d.avatar);
-        let participents = data.getParticipents(d.pollId);
-        io.to(d.pollId).emit('participentsUpdate', participents);
-        callback({status: "You joined the lobby!"})
-      }
-      else
-      {
-        callback({status: "There is already a player with this name."})
-      }
+    if (!data.doesPollExist(d.pollId)) {
+      return callback({successStatus: false, message: "This lobby does not exist."})
+
     }
-    else {
-      callback({status: "This lobby does not exist."})
+    if (data.doesUserExistInLobby(d.pollId, d.name)) {
+      return callback({successStatus: false, message: "There is already a player with this name."})
     }
+    data.submitUserName(d.pollId, d.name, d.avatar);
+    let participents = data.getParticipents(d.pollId);
+    io.to(d.pollId).emit('participentsUpdate', participents);
+    callback({successStatus: true, message: "You joined the lobby!"})
   });
 
   socket.on("GetScore", function(pollId){

@@ -124,12 +124,12 @@ export default {
         pollId: this.joinGameCode,
         name: this.playerName,
         avatar: this.chosenAvatar}
-      socket.emit("joinGame", request, callback => {
-        if(callback.status === "You joined the lobby!"){
+      socket.emit("joinGame", request, response => {
+        if(response.successStatus ){
           this.$router.push("/lobby/" + this.joinGameCode + "/" + this.playerName);
         }
         else {
-          alert(callback.status)
+          alert(response.message)
         }
       });
     },
