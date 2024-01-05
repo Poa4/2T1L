@@ -111,8 +111,9 @@ function sockets(io, socket, data) {
 
   socket.on("sendSelectedLie", function(pollId,userName,lie){
       data.addAnswer(pollId,userName,lie);
+      const clientAnswers = data.getAnswers(pollId);
+      io.to(pollId).emit("showParticipantAnswersDuringRound", clientAnswers)
       if(data.checkAnswerStatus(pollId)){
-        const clientAnswers = data.getAnswers(pollId);
         const correctAnswer = data.getCorrectAnswer(pollId);
         io.to(pollId).emit("showAnswer", correctAnswer, clientAnswers);
         setTimeout(() => {

@@ -111,9 +111,7 @@ export default {
   methods: {
     submitAnswerView() {
       this.selfSentBoolean = true;
-      setTimeout(() => {
-        this.submittedAnswer = true
-      }, 0);
+      this.submittedAnswer = true
     },
     selectLie(lieIndex) {
       if (this.timer) {
