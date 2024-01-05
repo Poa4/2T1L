@@ -120,26 +120,16 @@ export default {
       this.$router.push("/create/" + this.gameCode + "/" + this.playerName)
     },
     joinGame: function () {
-      socket.emit("doesPollExist",this.joinGameCode,(response) => {
-        if(response){ //response, means that it found a game with that pollid
-          socket.emit("doesUserExistInLobby", {
-            pollId: this.joinGameCode,
-            name: this.playerName,},
-          (response) => { //if its true, then a player with the same name already exists
-            if(!response) {
-              socket.emit("submitUserName", {
-                pollId: this.joinGameCode,
-                name: this.playerName,
-                avatar: this.chosenAvatar});
-              this.$router.push("/lobby/" + this.joinGameCode + "/" + this.playerName)
-            }
-            else{
-              alert("A user has the same name and/or avatar in the lobby.")
-            }
-          });
+      const joinGameRequest = {
+        pollId: this.joinGameCode,
+        name: this.playerName,
+        avatar: this.chosenAvatar}
+      socket.emit("joinGame", joinGameRequest, callback => {
+        if(callback.status === "You joined the lobby!"){
+          this.$router.push("/lobby/" + this.joinGameCode + "/" + this.playerName);
         }
-        else{
-          alert("No such poll exists")
+        else {
+          alert(callback.status)
         }
       })
     },

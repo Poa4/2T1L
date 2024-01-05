@@ -126,19 +126,24 @@ function sockets(io, socket, data) {
         }, 3000)
       }
   } );
-  
-  socket.on("doesUserExistInLobby", function(d, callback) {
-    console.log("datan som kommer", d)
-    let doesUserExist = data.doesUserExistInLobby(d.pollId, d.name)
-        callback(doesUserExist)
-      }
-  );
 
-  
-  socket.on("doesPollExist", function(pollId,callback){
-    let pollExists = data.doesPollExist(pollId);
-    callback(pollExists)
-  })
+  socket.on("joinGame", function(d, callback) {
+    if (data.doesPollExist(d.pollId)){
+      if(!data.doesUserExistInLobby(d.pollId, d.name)){
+        data.submitUserName(d.pollId, d.name, d.avatar);
+        let participents = data.getParticipents(d.pollId);
+        io.to(d.pollId).emit('participentsUpdate', participents);
+        callback({status: "You joined the lobby!"})
+      }
+      else
+      {
+        callback({status: "There is already a player with this name."})
+      }
+    }
+    else {
+      callback({status: "This lobby does not exist."})
+    }
+  });
 
   socket.on("GetScore", function(pollId){
     const participants = data.getParticipents(pollId);
