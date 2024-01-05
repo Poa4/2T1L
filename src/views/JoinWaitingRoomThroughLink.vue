@@ -2,11 +2,11 @@
   <div class="modal">
         <div class="modalContent">
           <form @submit.prevent="joinGame()">
-            <label for="playerName">Choose your nickname</label><br>
+            <label for="playerName">{{uiLabels.nickname}}</label><br>
             <input type="text" id="playerName" placeholder="Name" v-model="playerName" required="required"><br><br>
-            <label for="gameCode">Enter the room code:</label><br>
+            <label for="gameCode">{{uiLabels.roomCode}}</label><br>
             <input type="text" id="gameCode"  v-model="joinGameCode" required="required"><br><br>
-            <label for="avatar">Pick a avatar:</label><br>
+            <label for="avatar">{{uiLabels.avatar}}</label><br>
             <div class="avatarDiv">
               <span class="avatars" v-for="(emoji,index) in avatars"
                     :key="index">
@@ -17,10 +17,10 @@
 
             </div>
 
-            <button>Join Game</button>
+            <button>{{uiLabels.joinGame}}</button>
           </form>
           <button @click="this.debounce(),
-                          generateRandomAvatar" class="generateRandomAvatarsButton">CLICK ME FOR NEW EMOJIS!!</button><br>
+                          generateRandomAvatar" class="generateRandomAvatarsButton">{{uiLabels.newEmojis}}</button><br>
           <button @click="$router.push('/')">X</button>
         </div>
       </div>
@@ -42,12 +42,18 @@ export default {
       joinGameCode: "",
       avatars: [],
       chosenAvatar: "",
+      uiLabels: {},
+      lang: localStorage.getItem("lang") || "en",
   }
 
   },
   created: function() {
     this.debounce =  this.debounceGenerateRandomAvatarButton(this.generateRandomAvatar, 1000);
     this.joinGameCode = window.location.href.split("lobby/").pop();
+    socket.emit("pageLoaded", this.lang);
+    socket.on("init", (labels) => {
+      this.uiLabels = labels
+    })
     
 
   },
