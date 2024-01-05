@@ -86,39 +86,6 @@
 
 
 
-
-
-
-  <!-- <p><textarea name="textarea" id="t1" cols="30" rows="10" maxlength="20"></textarea></p> text area
-  <div>
-    Poll link: 
-    <input type="text" v-model="pollId">
-    <button v-on:click="createPoll">
-      Create poll
-    </button>
-    <div>
-      {{uiLabels.question}}:
-      <input type="text" v-model="question">
-      <div>
-        Answers:
-        <input v-for="(_, i) in answers" 
-               v-model="answers[i]" 
-               v-bind:key="'answer'+i">
-        <button v-on:click="addAnswer">
-          Add answer alternative
-        </button>
-      </div>
-    </div>
-    <button v-on:click="addQuestion">
-      Add question
-    </button>
-    <input type="number" v-model="questionNumber">
-    <button v-on:click="runQuestion">
-      Run question
-    </button>
-    {{data}}
-    <router-link v-bind:to="'/result/'+pollId">Check result</router-link>
-  </div>-->
 </template>
 
 <script>
@@ -142,11 +109,8 @@ export default {
       QRvalue: "",
       showRoundsForm: false,
       showTimeForm: false,
-      showTeamForm: false,
       rounds: 2,
       time: 30,
-      teams: false,
-      teamText: "No Team",
       participents: []
     }
   },
@@ -202,7 +166,7 @@ export default {
       this.$router.push("/InsertTruths/" + this.pollId + "/" + this.userName)
     },
     sendUpdatedGameOptions: function(){
-      socket.emit("GameOptionsChange", {pollId: this.pollId, data: {time: Number(this.time), rounds: Number(this.rounds),  teams: this.teams}})
+      socket.emit("GameOptionsChange", {pollId: this.pollId, data: {time: Number(this.time), rounds: Number(this.rounds)}})
     }
   }
 }
