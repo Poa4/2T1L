@@ -175,7 +175,7 @@ export default {
 
 <style scoped>
 .background{
-  background-color: rgb(39, 3, 63);
+  background-color: #27033f;
 }
 p{
   font-size: 1.2em;

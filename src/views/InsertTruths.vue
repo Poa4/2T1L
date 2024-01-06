@@ -175,7 +175,7 @@ export default {
     </script>
     <style scoped>
     body{
-     background-color: #1E152A;
+     background-color: #27033f;
     }
     input{
     width: 90%;
@@ -192,7 +192,7 @@ export default {
       opacity: 0.7; 
     }
     .insert{
-    background-color: #1E152A;
+    background-color: #27033f;
     }
     button{
            width:48%;

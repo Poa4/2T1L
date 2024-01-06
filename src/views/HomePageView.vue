@@ -178,7 +178,7 @@ export default {
 <style>
 body {
   overflow: hidden;
-  background-color: #1E152A;
+  background-color: #27033f;
 
 }
 
@@ -244,7 +244,7 @@ h1 {
 }
 
 .modalContent {
-  background-color: rgb(39, 3, 63);
+  background-color: #27033f;
   margin: 15% auto;
   width: 50%;
   color: white;
