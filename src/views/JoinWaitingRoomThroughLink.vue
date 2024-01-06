@@ -64,8 +64,18 @@ export default {
 
   methods: {
     joinGame: function () {
-      socket.emit("submitUserName", {pollId: this.joinGameCode, name: this.playerName, avatar: this.chosenAvatar});
-      this.$router.push("/lobby/" + this.joinGameCode + "/" + this.playerName)
+      const request = {
+        pollId: this.joinGameCode,
+        name: this.playerName,
+        avatar: this.chosenAvatar}
+      socket.emit("joinGame", request, response => {
+        if(response.successStatus ){
+          this.$router.push("/lobby/" + this.joinGameCode + "/" + this.playerName);
+        }
+        else {
+          alert(response.message)
+        }
+      });
     },
     debounceGenerateRandomAvatarButton: function(func, timeout) {
       let timer;
