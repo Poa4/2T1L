@@ -109,6 +109,7 @@ export default {
   },
   created: function () {
     this.debounce = this.debounceGenerateRandomAvatarButton(this.generateRandomAvatar, 1000);
+    this.generateRandomAvatar();
     socket.emit("pageLoaded", this.lang);
     socket.on("init", (labels) => {
       this.uiLabels = labels
