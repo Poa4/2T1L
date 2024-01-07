@@ -65,27 +65,35 @@ function sockets(io, socket, data) {
     io.to(pollId).emit("startGame")
   });
 
-  socket.on("createGameLobby", (d)=> {
-    if (!data.polls[d.pollId]){
-      data.createPoll(d.pollId)
-      data.submitUserName(d.pollId,d.name,d.avatar)
-    }
+  socket.on("createGameLobby", (d, callback)=> {
+    if (data.polls[d.pollId]){
+      return callback({successStatus: false, message: "There is already a lobby with this game code, generating a new one."})}
+    data.createPoll(d.pollId)
+    data.submitUserName(d.pollId,d.name,d.avatar)
+    callback({successStatus: true, message: "You joined the lobby!"})
   });
 
   socket.on("sendQuestions", function(pollId,questionaire){
     data.addQuestion2(pollId ,questionaire);
     if (data.checkParticipantStatus(pollId)) {
-      console.log("starting round")
       setTimeout(()  => {
         io.to(pollId).emit("startRound");}, 5000);}
   })
   socket.on("leaveLobby", function(pollId,username) {
     let participants = data.getParticipents(pollId);
     participants = participants.filter(participants => participants.name !== username);
+    if(!participants.length){
+      data.removePoll(pollId)
+      return
+    }
     data.updateParticipants(pollId, participants)
     io.to(pollId).emit('participentsUpdate', participants);
   });
 
+  socket.on("hostLeft", function(pollId) {
+    io.to(pollId).emit("hostLeftTheLobby")
+    data.removePoll(pollId)
+  });
 
   socket.on("getTime", function(pollId) {
     const timeInfo = data.getTimeInfo(pollId);

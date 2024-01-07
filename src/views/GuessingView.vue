@@ -96,7 +96,7 @@ export default {
 
     socket.on("endGame", () =>
         this.$router.push("/ScoreBoard/" + this.pollId));
-    socket.on("showAnswer", (correctAnswer, allAnswers) => {
+    socket.on("showAnswer", (correctAnswer) => {
       this.correctAnswer = correctAnswer;
     })
     socket.on("showParticipantAnswersDuringRound", (participantAnswers) => {

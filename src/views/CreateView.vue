@@ -69,6 +69,7 @@
             <button v-on:click="start" id="startgame">
               {{uiLabels.startGame}}
             </button>
+              <button v-on:click="leaveLobby()"> {{uiLabels.leaveButton}} </button>
           </section>
 
         
@@ -167,6 +168,10 @@ export default {
     },
     sendUpdatedGameOptions: function(){
       socket.emit("GameOptionsChange", {pollId: this.pollId, data: {time: Number(this.time), rounds: Number(this.rounds)}})
+    },
+    leaveLobby: function () {
+      socket.emit("hostLeft", this.pollId)
+      this.$router.push("/")
     }
   }
 }

@@ -64,7 +64,7 @@ export default {
       this.addQuestion();
       socket.emit("sendQuestions", this.pollId, this.questionaire);
       console.log(this.questionaire)
-      this.$router.push("/WaitingForParticipantsComponent/" + this.pollId + "/" +this.userName);
+      this.$router.push("/WaitingForParticipantsView/" + this.pollId + "/" +this.userName);
     }
     },
 

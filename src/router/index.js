@@ -55,9 +55,9 @@ const router = createRouter({
       component: () => import('../views/GuessingView.vue')
     },
     {
-      path: '/WaitingForParticipantsComponent/:id/:uid',
-      name: 'WaitingForParticipantsComponent',
-      component: () => import('../views/WaitingForParticipantsComponent.vue')
+      path: '/WaitingForParticipantsView/:id/:uid',
+      name: 'WaitingForParticipantsView',
+      component: () => import('../views/WaitingForParticipantsView.vue')
     },
     {
       path: '/ScoreBoard/:id',

@@ -103,6 +103,9 @@
           this.participents = participents;
           console.log(this.participents);
         });
+        socket.on("hostLeftTheLobby",(() => {
+          this.$router.push("/")
+      }))
     },
     methods: {
       submitUserName: function () {

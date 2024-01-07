@@ -57,7 +57,7 @@
             <div class="avatarDiv">
                 <span class="avatars" v-for="(emoji,index) in avatars"
                   :key="index">
-                    <input type="radio" name="avatar" @click="chooseAvatar(emoji)">{{ emoji }}</span>
+                    <input type="radio" name="avatar" @click="chooseAvatar(emoji)" required="required">{{ emoji }}</span>
             </div>
             <button>{{ uiLabels.joinGame }}</button>
           </form>
@@ -116,9 +116,19 @@ export default {
   },
   methods: {
     createGame: function () {
-      socket.emit("createGameLobby", {pollId: this.gameCode, name: this.playerName, avatar: this.chosenAvatar});
-      this.$router.push("/create/" + this.gameCode + "/" + this.playerName)
-    },
+      const request = {
+        pollId: this.gameCode,
+        name: this.playerName,
+        avatar: this.chosenAvatar}
+      socket.emit("createGameLobby", request, response => {
+            if(response.successStatus ){
+              this.$router.push("/create/" + this.gameCode + "/" + this.playerName);
+            }
+            else {
+              alert(response.message)
+              this.generateGameCode();
+            }
+      })},
     joinGame: function () {
       const request = {
         pollId: this.joinGameCode,

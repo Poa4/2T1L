@@ -27,7 +27,7 @@
 	"prev": "prev",
 	"next": "next",
 	"lockInAnswers": "Lock in answers",
-	"waitingForParticipants": "Hello, you are waiting",
+	"waitingForParticipants": "You are waiting for all the players to lock in their answers.",
 	"spotTheLie": "Spot the lie!",
 	"submitButton": "Submit",
 	"highScore": "HighScore",
