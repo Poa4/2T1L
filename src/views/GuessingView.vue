@@ -37,9 +37,10 @@
                   </button>
                 </div>
               </div>
-
             </div>
           </div>
+          {{this.visibleTimer}} seconds left to answer! <br>
+          {{this.roundsLeft}}/{{this.amountOfRounds}} rounds left!
         </div>
       </div>
     </div>
@@ -70,6 +71,10 @@ export default {
       submittedAnswer: false,
       roundInfo: {questions: [], participantAnswer: [[], [], [], []]},
       selfSentBoolean: false,
+      visibleTimer: 0,
+      countdown: null,
+      amountOfRounds: 0,
+      roundsLeft: 0,
       uiLabels: {},
       lang: localStorage.getItem("lang") || "en",
     }
@@ -79,9 +84,14 @@ export default {
     this.userName = this.$route.params.uid;
     socket.emit("joinPoll", this.pollId);
     socket.emit("getTime", this.pollId);
+    socket.emit("getRoundInfo",this.pollId);
     socket.emit("ReadyToGo", this.pollId);
+    socket.on("sendRoundInfo", (amountOfRounds, amountOfParticipents) => {
+      this.amountOfRounds = amountOfRounds*amountOfParticipents;
+    })
     socket.on("sendTimeInfo", (timeInfo) => {
       this.timeInfo = timeInfo;
+      this.visibleTimer = this.timeInfo;
     });
     socket.on("startingRounds", (question) => {
       this.clearArrays();
@@ -89,9 +99,11 @@ export default {
       this.timer = setTimeout(() => {
         this.selectLie(this.lieIndex)
       }, this.timeInfo * 1000);
+      this.countDownTimer();
     });
     socket.on("updateRound", () => {
       socket.emit("ReadyToGo", this.pollId)
+      this.visibleTimer = this.timeInfo;
     });
 
     socket.on("endGame", () =>
@@ -106,9 +118,16 @@ export default {
     socket.on("init", (labels) => {
       this.uiLabels = labels
     })
-
   },
   methods: {
+    countDownTimer() {
+      if (this.visibleTimer > 0) {
+        this.countdown = setTimeout(() => {
+          this.visibleTimer -= 1;
+          this.countDownTimer();
+        }, 1000);
+        }
+      },
     submitAnswerView() {
       this.selfSentBoolean = true;
       this.submittedAnswer = true
@@ -127,23 +146,22 @@ export default {
       this.lieIndex = null;
       this.roundInfo.participantAnswer = [[], [], [], []];
       this.submittedAnswer = false;
+      clearTimeout(this.countdown)
+      clearTimeout(this.timer)
+      this.roundsLeft++;
     },
     placeAnswers(allAnswers) {
       allAnswers.forEach(a => {
         if (a.answer === this.roundInfo.questions[0] && (this.roundInfo.participantAnswer[0].indexOf(a.avatar) === -1)) {
-          console.log("pushed to place 0")
           this.roundInfo.participantAnswer[0].push(a.avatar)
         }
         else if (a.answer === this.roundInfo.questions[1] && (this.roundInfo.participantAnswer[1].indexOf(a.avatar) === -1)) {
-          console.log("pushed to place 1")
           this.roundInfo.participantAnswer[1].push(a.avatar)
         }
         else if (a.answer === this.roundInfo.questions[2]&& (this.roundInfo.participantAnswer[2].indexOf(a.avatar) === -1)) {
-          console.log("pushed to place 2")
           this.roundInfo.participantAnswer[2].push(a.avatar)
         }
         else if(this.roundInfo.participantAnswer[3].indexOf(a.avatar) === -1){
-          console.log("pushed to place 3")
           this.roundInfo.participantAnswer[3].push(a.avatar)
         }
       });

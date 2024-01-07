@@ -163,8 +163,13 @@ export default {
       this.sendUpdatedGameOptions();
     },
     start: function() {
-      socket.emit("startGame", this.pollId)
-      this.$router.push("/InsertTruths/" + this.pollId + "/" + this.userName)
+      if(this.participents.length > 1) {
+        socket.emit("startGame", this.pollId)
+        this.$router.push("/InsertTruths/" + this.pollId + "/" + this.userName)
+      }
+      else {
+        alert("You cannot play alone.")
+      }
     },
     sendUpdatedGameOptions: function(){
       socket.emit("GameOptionsChange", {pollId: this.pollId, data: {time: Number(this.time), rounds: Number(this.rounds)}})

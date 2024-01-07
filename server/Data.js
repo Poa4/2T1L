@@ -29,7 +29,6 @@ Data.prototype.createPoll = function(pollId, lang="en") {
     poll.gameOptions = {time: 30, rounds: 2};
     poll.numbOfPlayers = 0;
     this.polls[pollId] = poll;
-    console.log("poll created", pollId, poll);
   }
 }
 Data.prototype.getRoundsInfo = function(pollId){
@@ -73,7 +72,6 @@ Data.prototype.getGameOptions = function(pollId){
 
 Data.prototype.addQuestion2 = function(pollId, questionaire){
   const poll = this.polls[pollId];
-  console.log("questionaire added", pollId, questionaire);
   if (typeof poll !== 'undefined') {
     questionaire.forEach(question => {
       poll.questions.push(question);
@@ -84,7 +82,6 @@ Data.prototype.addQuestion2 = function(pollId, questionaire){
 
 Data.prototype.submitUserName = function(pollId, name, avatar) {
   const poll = this.polls[pollId];
-  console.log("new user added to", pollId, name);
   if (typeof poll !== 'undefined') {
     let participent = {
       name: name,

@@ -1,6 +1,6 @@
 <template>
   <body>
-  <h1>
+  <h1 class="h1Text">
     {{uiLabels.waitingForParticipants}}
   </h1>
   </body>
@@ -35,5 +35,7 @@ export default  {
 </script>
 
 <style scoped>
-
+.h1Text {
+  color: white;
+}
 </style>

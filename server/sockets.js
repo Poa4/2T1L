@@ -96,9 +96,11 @@ function sockets(io, socket, data) {
     io.to(pollId).emit("sendTimeInfo", timeInfo)
   });
 
+
   socket.on("getRoundInfo", function(pollId) {
     const roundInfo = data.getRoundsInfo(pollId);
-    io.to(pollId).emit("sendRoundInfo", roundInfo)
+    const amountOfParticipants = data.getParticipents(pollId)
+    io.to(pollId).emit("sendRoundInfo", roundInfo, amountOfParticipants.length)
   });
 
   socket.on("ReadyToGo", function(pollId){
