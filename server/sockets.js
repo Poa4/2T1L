@@ -82,10 +82,6 @@ function sockets(io, socket, data) {
   socket.on("leaveLobby", function(pollId,username) {
     let participants = data.getParticipents(pollId);
     participants = participants.filter(participants => participants.name !== username);
-    if(!participants.length){
-      data.removePoll(pollId)
-      return
-    }
     data.updateParticipants(pollId, participants)
     io.to(pollId).emit('participentsUpdate', participants);
   });
