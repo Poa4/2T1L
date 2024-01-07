@@ -98,18 +98,14 @@ export default {
       chosenAvatar: "",
       gameSettings: {
         "rounds": 2,
-        "time": 60,
-        "teams": 1,
-      },
+        "time": 60,},
       uiLabels: {},
       id: "",
-      testCreateId: "test",
       lang: localStorage.getItem("lang") || "en"
     }
   },
   created: function () {
     this.debounce = this.debounceGenerateRandomAvatarButton(this.generateRandomAvatar, 1000);
-    this.generateRandomAvatar();
     socket.emit("pageLoaded", this.lang);
     socket.on("init", (labels) => {
       this.uiLabels = labels
