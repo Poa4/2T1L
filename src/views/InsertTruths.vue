@@ -63,7 +63,6 @@ export default {
       if(this.checkFields()){
       this.addQuestion();
       socket.emit("sendQuestions", this.pollId, this.questionaire);
-      console.log(this.questionaire)
       this.$router.push("/WaitingForParticipantsView/" + this.pollId + "/" +this.userName);
     }
     },
@@ -79,7 +78,6 @@ export default {
     //Changes button, depended on what question were at
     this.changeButtons();
       this.getPrevAnswer();
-      console.log(this.currentQuestion)
       }
     },
 
@@ -104,7 +102,6 @@ export default {
       else{
         this.getPrevAnswer()
       }
-      console.log(this.currentQuestion)
       }
     }
   },
@@ -151,8 +148,6 @@ export default {
   },
 
   changeButtons: function(){
-    console.log("current:", this.currentQuestion);
-    console.log("totQ:", this.numberOfRounds);
     if(this.currentQuestion+1 === this.numberOfRounds){ //+2 adjusts so we cant go to next page if this is the last to write in question
     this.b2Disabled = true;
     }

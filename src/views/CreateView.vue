@@ -10,7 +10,7 @@
             </div>
             <div id="second">
               <div>
-                <qrcode-vue :value="QRvalue" :size="size" level="H" /> <!--kan sätta in nya variabler på value och size för att ändra -->
+                <qrcode-vue :value="QRvalue" level="H" /> <!--kan sätta in nya variabler på value och size för att ändra -->
               </div>
                 <p>
                   {{uiLabels.joinQR}}
@@ -134,7 +134,6 @@ export default {
     });
     socket.on("participentsUpdate", (participents) => {
       this.participents = participents;
-      console.log(participents)
     })
 
   },
